@@ -1,0 +1,16 @@
+load weather.cod
+
+module library libgpsim_modules
+
+module load usart U1
+
+node PIC_tx
+node PIC_rx
+
+attach PIC_tx portb2 U1.RXPIN
+attach PIC_rx portb1 U1.TXPIN
+
+U1.txbaud=9600
+U1.rxbaud=9600
+
+frequency 4000000

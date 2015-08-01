@@ -1,0 +1,17 @@
+wind
+	average top ~15m/s (in Czech Republic) when ignoring huge storms
+	cyclone 33 m/s
+	tornado 100m/s
+
+	let's consider 50 m/s as a maximum, I doubt the anemometer would survive
+	half of that speed... and take anything slower than 0,1 m/s as zero
+
+rain
+	1 mm = 1 litre per one square meter
+	The Czech republic average is 680mm (exceptions like Lysa hora 1390 mm)
+	maximum was 204mm/7 hours
+
+temperature
+	minimum in CR -42°C, max 40,4°C
+
+
