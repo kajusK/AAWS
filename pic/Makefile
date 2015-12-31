@@ -5,7 +5,7 @@ ${NAME}.hex: *.asm
 	gpasm -i ${NAME}.asm
 
 burn:
-	pk2cmd -P${MCU} -F ${NAME}.hex -M -JN -X
+	pk2cmd -P${MCU} -F ${NAME}.hex -M -JN -W
 
 verify:
 	pk2cmd -P${MCU} -F ${NAME}.hex -Y
