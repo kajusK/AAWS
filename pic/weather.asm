@@ -50,7 +50,7 @@
 	include p16f88.inc
 	errorlevel -302
 
-	__CONFIG _CONFIG1, _CP_OFF & _CPD_OFF & _LVP_OFF & _BOREN_ON & _MCLRE_OFF & _PWRTE_ON & _WDT_ON & _INTRC_IO & _WRT_PROTECT_OFF & _DEBUG_OFF & _CCP1_RB3
+	__CONFIG _CONFIG1, _CP_OFF & _CPD_OFF & _LVP_OFF & _BOREN_ON & _MCLRE_ON & _PWRTE_ON & _WDT_OFF & _INTRC_IO & _WRT_PROTECT_OFF & _DEBUG_OFF & _CCP1_RB3
 	__CONFIG _CONFIG2, _IESO_OFF & _FCMEN_OFF
 
 	include weather.inc
@@ -246,10 +246,6 @@ init
 ;main
 ;######################################################################
 start
-	call	send_data
-loop
-	goto	loop
-
 ;first, get all the data
 	bcf	intcon, gie	;disable interrupts
 	call	humidity_temperature_read
@@ -273,7 +269,7 @@ loop
 	bsf	intcon, gie
 ;send the collected data
 	call	send_data
-;wait for two seconds
+;TODO: wait for two seconds
 	goto	start
 ;----------------------------------------------------------------------
 	end
