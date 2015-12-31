@@ -1,5 +1,5 @@
 ;**********************************************************************
-; Weather Station
+; Weather station
 ; PIC 16F88
 ; internal 4MHz
 ;------------------------------
@@ -16,22 +16,22 @@ BAUDRATE	equ	25	;uart baud rate 9.2k, brgh = 1
 ERR_TO_FAIL	equ	10
 
 ;bmp180
-BMP_WRITE_ADDR	equ	0xEF	;i2c write addr
-BMP_READ_ADDR	equ	0xEE	;i2c read add
-BMP_CONF_REG	equ	0xF4	;config register addres, store 0x2e to read temp, 0xb4 to read double oversampling pressure
-BMP_COEF_BASE	equ	0xaa	;address of the first calibration coeficient
+BMP_WRITE_ADDR	equ	0xEE	;i2c write addr
+BMP_READ_ADDR	equ	0xEF	;i2c read add
+BMP_CONT_REG	equ	0xF4	;control register addres, store 0x2e to read temp, 0xb4 to read double oversampling pressure
+BMP_COEF_BASE	equ	0xAA	;address of the first calibration coeficient
 BMP_COEF_NUM	equ	22	;number of coeficients to read
-BMP_DATA_BASE	equ	0xf6	;MSB of the result address
-BMP_TEMP_CMD	equ	0x2e	;command to read temperature
-BMP_PRESR_CMD	equ	0xb4	;command to read pressure with high resolution
+BMP_DATA_BASE	equ	0xF6	;MSB of the result address
+BMP_TEMP_CMD	equ	0x2E	;command to read temperature
+BMP_PRESR_CMD	equ	0xB4	;command to read pressure with high resolution
 
 BMP_CAL_BASE	equ	0xa0	;inside pics memory
 
 ;data space to temporary store received data
 DATA_SPACE_BASE	equ	0x20
 
-;info register
-ack		equ	0
+;info
+ack		equ	0	;used by i2c
 bmp180_set	equ	1	;1 if the pressure sensor was initialized
 temp_hum_ready	equ	2	;1 if temperature and humidity are in memory
 pressure_ready	equ	3	;1 if pressure data are valid
@@ -55,7 +55,7 @@ decimal		equ	7	;1 if we take the number as fixed point decimal
 	data4
 	data5
 ;.....................
-;used during communication
+;dht22
 	count_bytes
 	checksum
 
@@ -127,7 +127,7 @@ decimal		equ	7	;1 if we take the number as fixed point decimal
 	md_l
 ;......................
 
-	i2c_data
+	;i2c_data
 ;----------------------
 	endc
 
@@ -144,6 +144,7 @@ decimal		equ	7	;1 if we take the number as fixed point decimal
 	wait2
 
 	;needs to be here, i2c works mostly in bank1 and uses this
+	;dht22
 	count_bits
 ;------------------------
 	endc

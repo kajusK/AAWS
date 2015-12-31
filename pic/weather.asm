@@ -32,16 +32,16 @@
 ;	rain sensor should give a pulse every 0,1mm
 ;
 ;
-; intenzita
-; gamma zareni
-; index uv
-; snehova pokryvka
-; znecisteni vzduchu
-;
+; TODO:
+;	Light intensity
+;	Radiation background
+;	UV index
+;	Snow depth
+;	Air pollution
 
 ; Timer0 - rain sensor
 ; Timer1 - humidity sensor
-;
+; Timer2 - various timing events (timeout of communication, etc)
 ;
 ; Rain sensor is connected to timer0 gate, thus incrementing it automatically
 ; without software intervention (except overflow)
@@ -71,11 +71,11 @@ general
 	include routines.asm
 	include math.asm
 ;communication
+;	include i2c.asm
 	include uart.asm
-	include i2c.asm
 ;sensors
 	include dht22.asm
-	include bmp180.asm
+;	include bmp180.asm
 
 ;######################################################################
 ;interrupt
@@ -99,7 +99,7 @@ interrupt
 	goto	int_rain
 	btfsc	pir1, rcif
 	goto	int_rx
-	btfsc	intcon, t0if
+	btfsc	intcon, int0if
 	goto	int_tmr0
 	goto	int_end		;TODO: should newer occur, clear unused flags
 ;.............................
@@ -125,12 +125,12 @@ int_rx2
 	clrf	tmr0		;clear the timer
 	clrf	rain_h
 	clrf	rain_l		;and all the rain data
-	bcf	intcon, t0if	;and just to be sure, also the timer int flag
+	bcf	intcon, int0if	;and just to be sure, also the timer int flag
 	goto	int_end
 ;.............................
 ;measure wind speed, the tmr1 contains number of pulses from wind sensor
 int_tmr0
-	bcf	intcon, t0if
+	bcf	intcon, int0if
 
 	bcf	t1con, tmr1on	;stop the timer 1 (externally incremented)
 	;WARNING, ignoring he tmr1 overflow, seriously, the wind had to be
@@ -236,6 +236,7 @@ init
 	movlw	ERR_TO_FAIL
 	movwf	dht22_err
 	movwf	bmp180_err
+	clrf	info
 ;-------------sensors-----------------
 ;read bmp180 calibration table
 ;TODO uncomment
@@ -254,7 +255,7 @@ loop
 	call	humidity_temperature_read
 	bsf	intcon, gie	;and enable it again
 
-	call	pressure_read
+	;call	pressure_read
 ;wind direction
 	movlw	0x0f
 	andwf	porta, w

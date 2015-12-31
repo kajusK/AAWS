@@ -13,6 +13,8 @@
 ; I2C
 ; ports must be set to inputs with values 0 in portx
 ; disable interrupts before calling
+;
+; All timing calculated for 4MHz
 ;**********************************************************************
 ;-----------------------------
 ; start byte
@@ -25,6 +27,7 @@ i2c_start
 	nop
 	bcf	scl
 	bcf	status, rp0
+
 ;-----------------------------
 ; stop byte
 ;-----------------------------
@@ -38,10 +41,13 @@ i2c_stop_2
 	bsf	status, rp0
 	bsf	sda
 	bcf	status, rp0
+
 ;----------------------------
 ; send byte from W
+;
 ; expects scl to be pulled to low
 ; ack is in status, c; 1 if arrived
+;
 ; USES i2c_data, count_bits, info
 ;----------------------------
 i2c_tx
@@ -79,10 +85,13 @@ i2c_tx3
 	bcf	scl
 	bcf	status, rp0	;scl back to 0
 	return
+
 ;----------------------------
 ; read byte to W
+;
 ; expects scl to be pulled to low
 ; ack is in info, ack
+;
 ; USES i2c_data, count_bits, info
 ;----------------------------
 i2c_rx
@@ -119,6 +128,7 @@ i2c_rx3
 	movlw	i2c_data
 	bcf	status, rp0
 	return
+
 ;----------------------------
 ; helper to call i2c_stop and return
 ; useful to goto here at the btfss/c when needed to exit the function
@@ -127,4 +137,3 @@ i2c_rx3
 i2c_helper
 	call	i2c_stop
 	return
-

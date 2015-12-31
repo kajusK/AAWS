@@ -15,69 +15,11 @@
 ; Requires I2C
 ;**********************************************************************
 ;----------------------------
-; data will be stored on temp_l/h, humidity_l/h
-; if failed, the info, pressure_ready will be 0
-; DISABLES INTERRUPTS
-; USES	fsr
-;	stack - 3 levels (bmp180_cmd/read_data)
-;	DATA_SPACE_BASE - DATA_SPACE_BASE+4, bmp180_err, info
-;----------------------------
-pressure_read
-;first, we need to get the temperature
-	bcf	intcon, gie	;disable interrupts
-	movlw	BMP_TEMP_CMD
-	call	bmp180_cmd	;measure temperature
-	bsf	intcon, gie	;enable interrupts again
-
-	btfss	status, c
-	goto	pressure_error	;failed to communicate
-	movlw	5
-	call	wait_ms		;wait for longet than 4,5ms for result
-
-	bcf	intcon, gie
-	call	bmp180_read_data ;read the temperature
-	btfss	status, c
-	goto	pressure_error	;communication failed
-	bsf	intcon, gie
-
-;TODO: do the math with the temperature
-
-;get the pressure
-	nop			;just to make sure there are no pending ints...
-	bcf	intcon, gie
-	movlw	BMP_PRESR_CMD
-	call	bmp180_cmd	;measure air pressure
-	bsf	intcon, gie
-
-	btfss	status, c
-	goto	pressure_error	;failed to communicate
-	movlw	14
-	call	wait_ms		;wait for longet than 13,5ms for result
-
-	bcf	intcon, gie
-	call	bmp180_read_data ;read the temperature
-	btfss	status, c
-	goto	pressure_error	;communication failed
-	bsf	intcon, gie
-
-;TODO: do the math magic
-	;check info, bmp180_set if there are calibration data!
-	clrf	bmp180_err
-	bsf	info, pressure_ready
-	return
-
-;..........
-pressure_error
-	decfsz	bmp180_err, f
-	return			;not too much errors
-	movlw	ERR_TO_FAIL
-	movwf	bmp180_err
-	bcf	info, pressure_ready
-	return
-;----------------------------
 ; read calibration data from bmp180 eprom
 ; calibration data are stored from BMP_CAL_BASE to the base + BMP_COEF_NUM -1
+;
 ; returns 1 in status,c if succeeded, or 0
+;
 ; USES	fsr
 ;	stack - 2 levels (bmp180_read/write)
 ;	data1, BMP_CAL_BASE - (BMP_CAL_BASE + BMP_COEF_NUM - 1)
@@ -101,11 +43,75 @@ bmp180_init
 	return
 	bsf	info, bmp180_set	;set flag that data are ready
 	return
+
+;----------------------------
+; Read temperature and pressure from sensor
+;
+; data will be stored in pressure_h/l
+;
+; After successful reading, the info, pressure_ready is set, if not, this flag
+; is not modified for ERR_TO_FAIL times, then is cleared. It allows ignoring
+; momentary transfer errors if the sensor is not dead, just unstable.
+;
+; DISABLES INTERRUPT few times
+;
+; USES	fsr
+;	stack - 3 levels (bmp180_cmd/read_data,wait_ms,)
+;	DATA_SPACE_BASE - DATA_SPACE_BASE+4, bmp180_err (err count), info (flags)
+;----------------------------
+pressure_read
+;first, we need to get the temperature
+	movlw	BMP_TEMP_CMD
+	call	bmp180_cmd	;measure temperature
+	btfss	status, c
+	goto	pressure_error	;failed to communicate
+
+	movlw	5
+	call	wait_ms		;wait for longet than 4,5ms for result
+
+	call	bmp180_read_data ;read the temperature
+	btfss	status, c
+	goto	pressure_error	;communication failed
+
+;TODO: do the math with the temperature
+
+;get the pressure
+	movlw	BMP_PRESR_CMD
+	call	bmp180_cmd	;measure air pressure
+
+	btfss	status, c
+	goto	pressure_error	;failed to communicate
+
+	movlw	14
+	call	wait_ms		;wait for longet than 13,5ms for result
+
+	call	bmp180_read_data ;read the pressure
+	btfss	status, c
+	goto	pressure_error	;communication failed
+
+;TODO: do the math magic
+	;check info, bmp180_set if there are calibration data!
+	clrf	bmp180_err
+	bsf	info, pressure_ready
+	return
+
+;..........
+pressure_error
+	decfsz	bmp180_err, f
+	return			;not too much errors
+	movlw	ERR_TO_FAIL
+	movwf	bmp180_err
+	bcf	info, pressure_ready
+	return
+
+
 ;----------------------------
 ; write data to device
+;
 ; w contains amount of bytes to write
-; data are taken from fsr addressed byte and following ones
+; data are taken from fsr addressed byte and w - 1 following ones
 ; returns 1 in status,c if succeeded, or 0
+;
 ; USES	fsr
 ;	stack - 1 level (i2c_start/stop/tx))
 ;	count_bytes
@@ -119,15 +125,17 @@ bmp180_write
 	goto	i2c_helper	;ack didn't arrived, return false
 
 bmp180_write_2
-	movf	indf, f
+	movf	indf, w
 	call	i2c_tx
 	btfss	status, c
 	goto	i2c_helper	;ack did not arrived, return false
 
+	incf	fsr, f
 	decfsz	count_bytes, f
 	goto	bmp180_write_2
 	bsf	status, c	;return value
 	goto	i2c_helper	;suceeded, status, c is 1
+
 ;----------------------------
 ; read data from device
 ; w contains amount of bytes to read
@@ -156,6 +164,7 @@ bmp180_read_2
 	goto	bmp180_read_2
 	bsf	status, c	;return value
 	goto	i2c_helper	;all get, return
+
 ;----------------------------
 ; Send command
 ; w contains command
@@ -168,11 +177,14 @@ bmp180_cmd
 	movwf	data2		;command
 	movlw	data1
 	movwf	fsr		;addres to get data from
-	movlw	BMP_CONF_REG	;addres in remote memory to write to
+	movlw	BMP_CONT_REG	;addres in remote memory to write to
 	movwf	data1
 	movlw	2
-	call	bmp180_write
+	bcf	intcon, gie	;disable interrupts
+	call	bmp180_write	;and send
+	bsf	intcon, gie
 	return
+
 ;----------------------------
 ; Read lsm and msb
 ; data are stored in data1 (msb) and data2(lsb)
@@ -188,10 +200,16 @@ bmp180_read_data
 	movlw	BMP_DATA_BASE	;addres in remote memory to read from
 	movwf	data1
 	movlw	1
+	bcf	intcon, gie
 	call	bmp180_write
+	bsf	intcon, gie
 	btfss	status, c
 	return
 ;read msb and lsb to data 1/2
+	movlw	data1
+	movwf	fsr
 	movlw	2
+	bcf	intcon, gie
 	call	bmp180_read
+	bsf	intcon, gie
 	return

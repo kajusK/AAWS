@@ -1,16 +1,13 @@
-;------------------------------
-;Weather station with UART output
-;routines.asm
-;internal 4MHz
+;**********************************************************************
+; Weather Station
+; PIC 16F88
+; internal 4MHz
 ;------------------------------
 ; Jakub Kaderka
 ; jakub.kaderka@gmail.com
-; 2014
+; 2015
 ;------------------------------
-
-;**********************************************************************
-; wait - valid for 4MHz
-; USES wait1, wait2
+; routines.asm
 ;**********************************************************************
 ;-----------------------------
 ;wait for W*4+3 cycles
@@ -38,5 +35,3 @@ wait_ms1
 	decfsz	wait2, f
 	goto	wait_ms1
 	return
-
-

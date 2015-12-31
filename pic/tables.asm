@@ -1,18 +1,16 @@
-;------------------------------
-;Weather station with UART output
-;tables.asm
-;internal 4MHz
+;**********************************************************************
+; Weather Station
+; PIC 16F88
+; internal 4MHz
 ;------------------------------
 ; Jakub Kaderka
 ; jakub.kaderka@gmail.com
-; 2014
+; 2015
 ;------------------------------
-
-; Set W to offset in table
+; tables.asm
+;------------------------------
+; Call with offset to table in W
 ; the result will be returned in W
-
-;**********************************************************************
-; Strings
 ;**********************************************************************
 table_string
 	addwf pcl, f

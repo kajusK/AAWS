@@ -11,8 +11,6 @@
 ;------------------------------
 ; Various mathematical functions
 ;**********************************************************************
-
-;**********************************************************************
 ;----------------------------
 ; Convert 16bit unsigned number to bcd
 ; Fsr points to msb, the lsb is the next address, input won't be modified
