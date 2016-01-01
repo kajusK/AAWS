@@ -16,7 +16,7 @@
 ; Read humidity and temperature into into temp_l/h and humidity_l/h
 ;
 ; After successful reading, the info, temp_hum_ready is set, if not, this flag
-; is not modified for ERR_TO_FAIL times, then is cleared. It allows to ignoring
+; is not modified for ERR_TO_FAIL times, then is cleared. It allows ignoring
 ; momentary transfer errors if the sensor is not dead, just unstable.
 ;
 ; Wait at least 2 seconds before another measurement
