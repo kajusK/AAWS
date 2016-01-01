@@ -31,7 +31,7 @@
 ;----------------------------
 humidity_temperature_read
 dht22_read
-;send start - low for min 800us
+;send start - low for min 1ms
 	bsf	status, rp0
 	bcf	dht22
 	movlw	1
@@ -80,13 +80,13 @@ dht22_read_data_2
 	goto	dht22_error	;checksum not correct
 ;all data correct
 	clrf	dht22_err	;clear latest errors
-	movf	data1, f
+	movf	data1, w
 	movwf	humidity_h
-	movf	data2, f
+	movf	data2, w
 	movwf	humidity_l
-	movf	data3, f
+	movf	data3, w
 	movwf	temp_h
-	movf	data3, f
+	movf	data4, w
 	movwf	temp_l		;move all the data to the newes location
 	bsf	info, temp_hum_ready
 	return			;finished
@@ -95,12 +95,11 @@ dht22_read_data_2
 dht22_byte
 	movlw	8
 	movwf	count_bits
-dht22_byte_2
 	goto	dht22_bit	;read one bit, result in status, c
-dht22_byte_3
+dht22_byte_2
 	rlf	indf, f		;rotate via carry -> add result from c to register
 	decfsz	count_bits, f
-	goto	dht22_byte_2	;read another bit
+	goto	dht22_bit	;read another bit
 	goto	dht22_read_data_2	;whole byte finished
 
 ;read one bit - based on length of high part of pulse
@@ -117,7 +116,7 @@ dht22_bit_2
 ;bit ended, get lenght
 	movlw	50
 	subwf	tmr2, w		;tmr2 - 50 => set status, c to received bit value
-	goto	dht22_byte_3
+	goto	dht22_byte_2
 
 ;...................
 ;if something failed
