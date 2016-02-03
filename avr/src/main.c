@@ -18,9 +18,16 @@
 #include "config.h"
 #include "bmp180.h"
 #include "dht22.h"
+#include "rain.h"
+#include "wind.h"
 #include "serial.h"
 
 ISR(BADISR_vect)
+{
+
+}
+
+void print_num(uint8_t num)
 {
 
 }
@@ -37,10 +44,14 @@ int main(int argc, char *argv[])
 	puts("Kajus 2016\n\r");
 
 	bmp180_init();
+	rain_init();
+	wind_init();
 	//wind speed, rain counter....
 
 //	set_sleep_mode()
-//	sei();
+
+	//finally, enable interrupts
+	sei();
 
 	while (1) {
 		bmp180_read(&temp, &pres);

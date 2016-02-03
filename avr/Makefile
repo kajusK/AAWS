@@ -4,7 +4,7 @@
 # Jakub Kaderka 2016
 ###########################################
 #used MCU
-MCU=attiny2313
+MCU=attiny4313
 #used frequency
 F_CPU=1000000UL
 
