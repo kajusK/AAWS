@@ -13,6 +13,9 @@
 #include <util/delay.h>
 #include <util/atomic.h>
 
+//TODO rewrite, definition which part to compile should be in Makefile
+#ifdef USIDR
+
 #include "config.h"
 
 #if defined(__AVR_AT90Mega169__) | defined(__AVR_ATmega169__) | \
@@ -194,3 +197,5 @@ void USI_TWI_init(void)
 	//two wire mode, external clock for shift reg., software strobe (USITC)
 	USICR = _BV(USIWM1)|_BV(USICS1)|_BV(USICLK);
 }
+
+#endif
