@@ -60,7 +60,11 @@ void serial_init(void)
 #endif
 
 	// 8 bit mode
+#ifdef URSEL
+	UCSRC = _BV(UCSZ1) | _BV(UCSZ0) | _BV(URSEL);
+#else
 	UCSRC = _BV(UCSZ1) | _BV(UCSZ0);
+#endif
 	UCSRB = _BV(RXEN) | _BV(TXEN);
 
 	// redirect stdout/in to serial
