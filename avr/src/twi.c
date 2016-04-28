@@ -15,9 +15,9 @@
 #include "config.h"
 
 #undef TW_START		//defined in library, not needed here, the name is great
-#define TW_START _BV(TWINT) | _BV(TWEN) | _BV(TWSTA)
-#define TW_STOP _BV(TWINT) | _BV(TWEN) | _BV(TWSTO)
-#define TW_DATA _BV(TWINT) | _BV(TWEN)
+#define TW_START (_BV(TWINT) | _BV(TWEN) | _BV(TWSTA))
+#define TW_STOP (_BV(TWINT) | _BV(TWEN) | _BV(TWSTO))
+#define TW_DATA (_BV(TWINT) | _BV(TWEN))
 
 #ifdef TWI_MODE_FAST
 	#define TW_FREQ 4
@@ -43,6 +43,8 @@
 static uint8_t TWI_transmit(uint8_t mask)
 {
 	TWCR = mask;
+	if (mask == TW_STOP)
+		return 0; //TWINT not modified when sending stop condition
 	loop_until_bit_is_set(TWCR, TWINT);
 	return TW_STATUS;
 }
@@ -53,7 +55,7 @@ static uint8_t TWI_transmit(uint8_t mask)
 static void TWI_read(uint8_t *buffer, uint8_t length)
 {
 	do {
-		TWI_transmit(TW_DATA);
+		TWI_transmit(TW_DATA | _BV(TWEA));
 		*buffer++ = TWDR;
 	} while (--length > 0);
 }
