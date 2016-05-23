@@ -55,7 +55,10 @@ static uint8_t TWI_transmit(uint8_t mask)
 static void TWI_read(uint8_t *buffer, uint8_t length)
 {
 	do {
-		TWI_transmit(TW_DATA | _BV(TWEA));
+		if (length == 1)
+			TWI_transmit(TW_DATA);	//nack
+		else
+			TWI_transmit(TW_DATA | _BV(TWEA));
 		*buffer++ = TWDR;
 	} while (--length > 0);
 }
