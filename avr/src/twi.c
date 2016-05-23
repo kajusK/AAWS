@@ -79,10 +79,12 @@ static uint8_t TWI_send_addr(uint8_t address)
 	TWDR = address;
 	uint8_t status = TWI_transmit(TW_DATA);
 
-	if ((address & 0x01) && status != TW_MR_SLA_ACK)
+	if (address & 0x01) {
+		if (status != TW_MR_SLA_ACK)
+			return 1;
+	} else if (status != TW_MT_SLA_ACK) {
 		return 1;
-	else if (status != TW_MT_SLA_ACK)
-		return 1;
+	}
 
 	return 0;
 }
