@@ -2,7 +2,7 @@
  * BMP180 temperature and pressure sensor
  *
  * -40 to 85 (+-2) °C
- * 300 to 1100 (+-4,5) hPa
+ * 300 to 1100 (+-6) hPa
  *
  * Jakub Kaderka 2016
  */
