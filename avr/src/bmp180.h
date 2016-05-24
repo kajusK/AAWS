@@ -21,6 +21,6 @@ uint8_t bmp180_init(void);
 /*
  * Read the temperature (in tenths of °C) and pressure (in Pascals)
  */
-void bmp180_read(int16_t *temp, uint16_t *pressure);
+uint8_t bmp180_read(int16_t *temp, uint32_t *pressure);
 
 #endif
