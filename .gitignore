@@ -1,2 +1,3 @@
 *.hex
 avr/obj
+*.fcstd1
