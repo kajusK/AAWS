@@ -1,0 +1,42 @@
+<?php
+/**
+ * Weather station UI
+ *
+ * @copyright 2016 Jakub Kaderka
+ * @license GNU General Public License, version 2; see LICENSE.txt
+ */
+defined("IN_APP") or die("Unauthorized access");
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?= Lang::getLang() ?>" lang="<?= Lang::getLang() ?>">
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-language" content="<?= Lang::getLang() ?>" />
+
+	<title><?= Lang::get("Weather station")?> - <?= $station_name ?></title>
+
+	<meta name="description" content="<?= Lang::get("html_description") ?> <?= $station_name ?>" />
+	<meta name="keywords" content="<?= Lang::get("html_keywords")?>,<?= $station_name ?>" />
+
+	<link rel="stylesheet" type="text/css" href="themes/<?= $theme ?>/theme.css" />
+	<link rel="shortcut icon" type="image/x-icon" href="themes/<?= $theme ?>/favicon.ico"/>
+</head>
+<body>
+<div id="wrapper">
+<div id="menu">
+	<div id="menu_left">
+	<a href="<?= get_link(false) ?>"><?= Lang::get("Current weather") ?></a>
+	<a href="<?= get_link("webcam") ?>"><?= Lang::get("Webcam") ?></a>
+	<a href="<?= get_link("records") ?>"><?= Lang::get("Records") ?></a>
+	<a href="<?= get_link("about") ?>"><?= Lang::get("About station") ?></a>
+	</div>
+
+	<div id="menu_right">
+	<?php foreach (Lang::getLangs() as $l_short => $l_long): ?>
+		<?php if ($l_short == Lang::getLang()) { continue; } ?>
+		<a href="<?= get_link($page, $l_short) ?>"><?= $l_long ?></a>
+	<?php endforeach ?>
+	</div>
+</div>
+<div id="content">

@@ -1,0 +1,67 @@
+<?php
+/**
+ * Weather station UI
+ *
+ * @copyright 2016 Jakub Kaderka
+ * @license GNU General Public License, version 2; see LICENSE.txt
+ */
+defined("IN_APP") or die("Unauthorized access");
+?>
+
+<div id="overview">
+<h2><?= Lang::get("Overview") ?></h2>
+<table>
+	<tr><td><?= Lang::get("Temperature") ?></td><td><?= $temp ?>&deg;C</td></tr>
+	<tr><td><?= Lang::get("Wind speed") ?></td><td><?= $wind_speed ?> m/s</td></tr>
+	<tr><td><?= Lang::get("Wind direction") ?></td><td><?= $wind_dir ?> &deg;</td></tr>
+	<tr><td><?= Lang::get("Pressure") ?></td><td><?= $pres ?> hPa</td></tr>
+	<tr><td><?= Lang::get("Rain falls") ?></td><td><?= $rain ?> mm/hod</td></tr>
+</table>
+<img alt="Webkamera" src="./ook.jpg"/>
+</div>
+
+
+<h2><?= Lang::get("Station location") ?></h2>
+<table>
+	<tr><td><?= Lang::get("Latitude") ?></td><td><?= $station_latitude ?></td></tr>
+	<tr><td><?= Lang::get("Longtitude") ?></td><td><?= $station_longtitude ?></td></tr>
+	<tr><td><?= Lang::get("Elevation") ?></td><td><?= $station_elevation ?> m</td></tr>
+</table>
+
+<h2><?= Lang::get("Temperature") ?></h2>
+<table>
+	<tr><td><?= Lang::get("Current") ?></td><td><?= $temp ?>&deg;C</td></tr>
+	<tr><td><?= Lang::get("Tendency") ?></td><td><?= $temp_trend ?>&deg;C/hod.</td></tr>
+	<tr><td><?= Lang::get("Dew point") ?></td><td><?= $dew_point ?>&deg;C</td></tr>
+	<tr><td><?= Lang::get("Max in 24h") ?></td><td><?= $temp_max ?>&deg;C</td></tr>
+	<tr><td><?= Lang::get("Min in 24h") ?></td><td><?= $temp_min ?>&deg;C</td></tr>
+	<tr><td><?= Lang::get("Average in 24h") ?></td><td><?= $temp_avg ?>&deg;C</td></tr>
+</table>
+<img alt="graf teploty" src="./ook.jpg"/>
+
+<h2><?= Lang::get("Wind") ?></h2>
+<table>
+	<tr><td><?= Lang::get("Speed") ?></td><td><?= $wind_speed ?> m/s</td></tr>
+	<tr><td><?= Lang::get("Direction") ?></td><td><?= $wind_dir ?> &deg;</td></tr>
+	<tr><td><?= Lang::get("Gusts") ?></td><td><?= $wind_gusts ?> m/s</td></tr>
+</table>
+<img alt="graf větru" src="./ook.jpg"/>
+
+<h2><?= Lang::get("Rain falls") ?></h2>
+<table>
+	<tr><td><?= Lang::get("Intensity") ?></td><td><?= $rain ?> mm/hod</td></tr>
+	<tr><td><?= Lang::get("In last hour") ?></td><td><?= $rain_hour ?> mm</td></tr>
+	<tr><td><?= Lang::get("Since midnight") ?></td><td><?= $rain_midnight ?> mm</td></tr>
+	<tr><td><?= Lang::get("This month") ?></td><td><?= $rain_month ?> mm</td></tr>
+	<tr><td><?= Lang::get("This year") ?></td><td><?= $rain_year ?> mm</td></tr>
+	<tr><td><?= Lang::get("Latest rainfalls") ?></td><td><?= $rain_date ?></td></tr>
+</table>
+<img alt="graf srážek" src="./ook.jpg"/>
+
+<h2><?= Lang::get("Pressure") ?></h2>
+<table>
+	<tr><td><?= Lang::get("Pressure") ?></td><td><?= $pres ?> hPa</td></tr>
+	<tr><td><?= Lang::get("Tendency") ?></td><td><?= $pres_trend ?> hPa/hod.</td></tr>
+</table>
+
+<img alt="graf tlaku" src="./ook.jpg"/>
