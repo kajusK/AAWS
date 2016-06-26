@@ -18,6 +18,7 @@ $translation = array(
 'Wind speed' => "Wind speed",
 'Wind direction' => "Wind direction",
 'Pressure' => "Pressure",
+'Humidity' => "Humidity",
 'Rain falls' => "Rain falls",
 'Station location' => "Station location",
 'Latitude' => "Latitude",

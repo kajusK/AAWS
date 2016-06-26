@@ -15,6 +15,7 @@ defined("IN_APP") or die("Unauthorized access");
 	<tr><td><?= Lang::get("Wind speed") ?></td><td><?= $wind_speed ?> m/s</td></tr>
 	<tr><td><?= Lang::get("Wind direction") ?></td><td><?= $wind_dir ?> &deg;</td></tr>
 	<tr><td><?= Lang::get("Pressure") ?></td><td><?= $pres ?> hPa</td></tr>
+	<tr><td><?= Lang::get("Humidity") ?></td><td><?= $humidity ?> %RH</td></tr>
 	<tr><td><?= Lang::get("Rain falls") ?></td><td><?= $rain ?> mm/hod</td></tr>
 </table>
 <img alt="Webkamera" src="./ook.jpg"/>
@@ -31,7 +32,7 @@ defined("IN_APP") or die("Unauthorized access");
 <h2><?= Lang::get("Temperature") ?></h2>
 <table>
 	<tr><td><?= Lang::get("Current") ?></td><td><?= $temp ?>&deg;C</td></tr>
-	<tr><td><?= Lang::get("Tendency") ?></td><td><?= $temp_trend ?>&deg;C/hod.</td></tr>
+	<tr><td><?= Lang::get("Tendency") ?></td><td><?= $temp_tendency ?>&deg;C/hod.</td></tr>
 	<tr><td><?= Lang::get("Dew point") ?></td><td><?= $dew_point ?>&deg;C</td></tr>
 	<tr><td><?= Lang::get("Max in 24h") ?></td><td><?= $temp_max ?>&deg;C</td></tr>
 	<tr><td><?= Lang::get("Min in 24h") ?></td><td><?= $temp_min ?>&deg;C</td></tr>
@@ -61,7 +62,13 @@ defined("IN_APP") or die("Unauthorized access");
 <h2><?= Lang::get("Pressure") ?></h2>
 <table>
 	<tr><td><?= Lang::get("Pressure") ?></td><td><?= $pres ?> hPa</td></tr>
-	<tr><td><?= Lang::get("Tendency") ?></td><td><?= $pres_trend ?> hPa/hod.</td></tr>
+	<tr><td><?= Lang::get("Tendency") ?></td><td><?= $pres_tendency ?> hPa/hod.</td></tr>
 </table>
-
 <img alt="graf tlaku" src="./ook.jpg"/>
+
+<h2><?= Lang::get("Humidity") ?></h2>
+<table>
+	<tr><td><?= Lang::get("Current") ?></td><td><?= $humidity ?> %RH</td></tr>
+	<tr><td><?= Lang::get("Tendency") ?></td><td><?= $humidity_tendency ?> %RH</td></tr>
+</table>
+<img alt="graf vlhkosti" src="./ook.jpg"/>
