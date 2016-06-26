@@ -12,8 +12,11 @@ class Config
 	private static $config = false;
 
 	public static function get($class, $option) {
-		if (!self::$config)
+		if (!self::$config) {
 			self::$config = parse_ini_file("config.ini", true);
+			if (!self::$config)
+				Err::fatal("Unable to parse config file", 500);
+		}
 
 		if (!isset(self::$config[$class][$option]))
 			return false;
