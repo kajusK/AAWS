@@ -24,9 +24,9 @@ defined("IN_APP") or die("Unauthorized access");
 
 <h2><?= Lang::get("Station location") ?></h2>
 <table>
-	<tr><td><?= Lang::get("Latitude") ?></td><td><?= $station_latitude ?></td></tr>
-	<tr><td><?= Lang::get("Longtitude") ?></td><td><?= $station_longtitude ?></td></tr>
-	<tr><td><?= Lang::get("Elevation") ?></td><td><?= $station_elevation ?> m</td></tr>
+	<tr><td><?= Lang::get("Latitude") ?></td><td><?= Config::get("station", "latitude") ?></td></tr>
+	<tr><td><?= Lang::get("Longtitude") ?></td><td><?= Config::get("station", "longtitude") ?></td></tr>
+	<tr><td><?= Lang::get("Elevation") ?></td><td><?= Config::get("station", "elevation") ?> m</td></tr>
 </table>
 
 <h2><?= Lang::get("Temperature") ?></h2>

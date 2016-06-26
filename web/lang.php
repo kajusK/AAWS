@@ -9,19 +9,21 @@ defined("IN_APP") or die("Unauthorized access");
 
 class Lang
 {
-	private static $lang = DEFAULT_LANG;
+	private static $lang = "en";
 	private static $lang_list = false;
 	private static $fallbacked = false;
 	private static $translations = array();
 
 	//select language to use and load translations
 	public static function select() {
+		self::$lang = Config::get("general", "default_lang");
+
 		if (isset($_GET["lang"]))
 			self::$lang = $_GET["lang"];
 
 		if (!self::isPresent(self::$lang)) {
 			self::$fallbacked = true;
-			self::$lang = DEFAULT_LANG;
+			self::$lang = Config::get("general", "default_lang");
 			if (!self::isPresent(self::$lang))
 				self::$lang = "en";
 		}

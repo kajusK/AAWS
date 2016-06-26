@@ -14,13 +14,13 @@ defined("IN_APP") or die("Unauthorized access");
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 	<meta http-equiv="Content-language" content="<?= Lang::getLang() ?>" />
 
-	<title><?= Lang::get("Weather station")?> - <?= $station_name ?></title>
+	<title><?= Lang::get("Weather station")?> - <?= Config::get("station", "name") ?></title>
 
-	<meta name="description" content="<?= Lang::get("html_description") ?> <?= $station_name ?>" />
-	<meta name="keywords" content="<?= Lang::get("html_keywords")?>,<?= $station_name ?>" />
+	<meta name="description" content="<?= Lang::get("html_description") ?> <?= Config::get("station", "name") ?>" />
+	<meta name="keywords" content="<?= Lang::get("html_keywords")?>,<?= Config::get("station", "name") ?>" />
 
-	<link rel="stylesheet" type="text/css" href="themes/<?= $theme ?>/theme.css" />
-	<link rel="shortcut icon" type="image/x-icon" href="themes/<?= $theme ?>/favicon.ico"/>
+	<link rel="stylesheet" type="text/css" href="themes/<?= Config::get("general", "theme") ?>/theme.css" />
+	<link rel="shortcut icon" type="image/x-icon" href="themes/<?= Config::get("general", "theme") ?>/favicon.ico"/>
 </head>
 <body>
 <div id="wrapper">

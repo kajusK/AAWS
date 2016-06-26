@@ -1,15 +1,22 @@
 <?php
+/**
+ * Weather station UI
+ *
+ * @copyright 2016 Jakub Kaderka
+ * @license GNU General Public License, version 2; see LICENSE
+ */
+defined("IN_APP") or die("Unauthorized access");
 
-#define("DEBUG", true);
-define("TIMEZONE", "Europe/Prague");
+class Config
+{
+	private static $config = false;
 
-#default language
-define("DEFAULT_LANG", "en");
+	public static function get($class, $option) {
+		if (!self::$config)
+			self::$config = parse_ini_file("config.ini", true);
 
-#station parameters
-$station_latitude="123N";
-$station_longtitude="123E";
-$station_elevation="123456";
-$station_name="Horni dolni";
-
-$theme="default";
+		if (!isset(self::$config[$class][$option]))
+			return false;
+		return self::$config[$class][$option];
+	}
+}

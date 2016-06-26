@@ -1,0 +1,27 @@
+[general]
+#keep false or commented when running in production
+debug = true
+default_lang = "en"
+timezone = "Europe/Prague"
+theme = "default";
+
+[station]
+#Name of the station's location
+name="Horní Dolní"
+latitude = "50° 10' 11.1234'' N"
+longtitude = "14° 11' 12.13'' E"
+#above the sea level
+elevation = "123"
+
+[db]
+#sqlite or mysql
+type = "sqlite"
+#sqlite config
+filename = "./weather.db"
+
+#mysql config
+#user = "dbuser"
+#pass = "dbpass"
+#name = "weather"
+#host = "127.0.0.1"
+#port = "3306"

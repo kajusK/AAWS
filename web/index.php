@@ -8,19 +8,20 @@
 
 define("IN_APP", true);
 define("VERSION", "0.1");
-require_once "config.php";
 
-if (defined("DEBUG") && DEBUG == true)
+require_once "config.php";
+require_once "error.php";
+
+if (Config::get("general", "debug"))
 	error_reporting(-1);
 else
 	error_reporting(0);
 
-require_once "error.php";
 require_once "lang.php";
 
 function get_link($path, $lang=false)
 {
-	if (Lang::getLang() != DEFAULT_LANG && !$lang)
+	if (Lang::getLang() != Config::get("general","default_lang") && !$lang)
 		$lang = Lang::getLang();
 	$lang_param = $lang ? "?lang=".$lang : "";
 
@@ -33,7 +34,7 @@ function get_link($path, $lang=false)
 }
 
 //set timezone
-if (date_default_timezone_set(TIMEZONE) == false) {
+if (date_default_timezone_set(Config::get("general", "timezone")) == false) {
 	date_default_timezone_set("UTC");
 	error_log(WARN, "UTC timezone used");
 }
