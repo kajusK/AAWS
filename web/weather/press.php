@@ -11,7 +11,8 @@ class Press
 {
 	//returns relative pressure - Prel = Pabs + elevation/8.3
 	public static function getCurrent() {
-		return Db::latest("pressure") + Config::get("station", "elevation")/8.3;
+		$press = Db::latest("pressure") + Config::get("station", "elevation")/8.3;
+		return round($press, 1);
 	}
 
 	public static function getTendency() {
