@@ -18,6 +18,7 @@ $translation = array(
 'Wind speed' => "Rychlost větru",
 'Wind direction' => "Směr větru",
 'Pressure' => "Tlak",
+'Relative pressure' => "Relativní tlak",
 'Humidity' => "Vlhkost",
 'Rain falls' => "Srážky",
 'Station location' => "Umístění stanice",
