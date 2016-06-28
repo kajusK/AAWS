@@ -18,6 +18,8 @@ else
 	error_reporting(0);
 
 require_once "lang.php";
+require_once "db.php";
+Db::init(Config::get("db", "type"));
 
 function get_link($path, $lang=false)
 {
@@ -36,7 +38,7 @@ function get_link($path, $lang=false)
 //set timezone
 if (date_default_timezone_set(Config::get("general", "timezone")) == false) {
 	date_default_timezone_set("UTC");
-	error_log(WARN, "UTC timezone used");
+	error_log("WARN: UTC timezone used");
 }
 
 Lang::select();
@@ -47,19 +49,19 @@ if (Lang::isFallbacked() || !is_file("view/".$page.".phtml") || $page == "404") 
 	$page = "404";
 }
 
-#require_once "libs/weather.php";
-#switch($page) {
-#case "index":
-#	$data = Weather::generate();
-#	break;
-#
-#case "records":
-#	$data = Weather::records();
-#	break;
-#}
-#
-#if (isset($data))
-#	extract($data);
+require_once "weather/weather.php";
+switch($page) {
+case "index":
+	$data = Weather::generate();
+	break;
+
+case "records":
+	$data = Weather::records();
+	break;
+}
+
+if (isset($data))
+	extract($data);
 
 #load the page
 require "view/"."head.phtml";
