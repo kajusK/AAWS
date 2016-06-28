@@ -70,7 +70,7 @@ Class Db
 		if (!isset($hour_ago['temp']))
 			return 0;
 
-		return self::latest($field, $table) - $hour_ago['temp'];
+		return self::latest($field, $table) - $hour_ago[$field];
 	}
 
 	public static function getSum($field, $since, $table="weather") {
