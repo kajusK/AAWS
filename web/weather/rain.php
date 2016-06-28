@@ -26,7 +26,7 @@ class Rain
 	}
 
 	public static function thisYear() {
-		return Db::getSum("rain", time(0,0,0,1,1), "rain");
+		return Db::getSum("rain", mktime(0,0,0,1,1), "rain");
 	}
 
 	public static function getLatestDate() {
