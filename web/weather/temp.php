@@ -35,7 +35,7 @@ class Temp
 	}
 
 	public static function avg24h() {
-		return Db::getAvg("temp", time() - 86400);
+		return round(Db::getAvg("temp", time() - 86400), 1);
 	}
 }
 
