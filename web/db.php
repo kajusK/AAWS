@@ -101,7 +101,6 @@ Class Db
 		$q = "SELECT timestamp FROM 'weather' WHERE rain != 0 ";
 		$q .= "ORDER BY timestamp DESC LIMIT 1";
 		$time = self::_query($q, array())['timestamp'];
-		echo $time;
 
 		return date("j.n.Y H:i", $time);
 	}
