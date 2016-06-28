@@ -1,3 +1,4 @@
 *.hex
 avr/obj
 *.fcstd1
+web/config.ini
