@@ -13,7 +13,7 @@
 #include <signal.h>
 
 #include "serial.h"
-#include "protocol.h"
+#include "serial.h"
 #include "db.h"
 
 #define DEFAULT_DB_FILE "weather.db"

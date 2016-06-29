@@ -9,10 +9,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "protocol.h"
+#include "station.h"
 
 /*
- * Decode message (#X:123.456;Y:567.89;@) to structure
+ * Decode message ( format #X:123.456;Y:567.89;@) to structure
  */
 struct s_message decode_message(char *message)
 {

@@ -5,8 +5,8 @@
  *
  * Jakub Kaderka 2016
  */
-#ifndef __PROTOCOL_H_
-#define __PROTOCOL_H_
+#ifndef __STATION_H_
+#define __STATION_H_
 
 struct s_message {
 	float temp;
