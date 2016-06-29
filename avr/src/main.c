@@ -5,6 +5,24 @@
  * air pressure 300 to 1100 (+-4,5) hPa
  * humidity 0-100 (+-2) %RH
  *
+ * Data format:
+ * ------------
+ * #T:23.5;H:32;P:1013.25;R:2.55;W:11.5;D:120;@
+ *
+ * Explanation:
+ * # - start of the message
+ * T - temperatur in °C
+ * H - humidity in %RH
+ * P - absolute pressure in hPa
+ * R - rain counter since last reset in mm
+ * W - wind speed in m/s
+ * D - wind direction in degrees
+ * @ - end of message
+ *
+ * Commands:
+ * ---------
+ * #R@ - reset rain counter (e.g. every hour...)
+ *
  * Jakub Kaderka 2016
  */
 
