@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <sqlite3.h>
 
+#include "station.h"
 #include "db.h"
 
 static sqlite3 *db;
@@ -69,8 +70,7 @@ void db_close()
 	sqlite3_close(db);
 }
 
-int db_add_weather(int wind_dir, float wind_speed, float wind_gusts, float press,
-		   float temp, float humidity, float rain)
+int db_add_weather(struct s_message *data, float wind_gusts)
 {
 	int res = 0;
 	sqlite3_stmt *stmt;
@@ -84,13 +84,13 @@ int db_add_weather(int wind_dir, float wind_speed, float wind_gusts, float press
 		return -1;
 	}
 
-	sqlite3_bind_double(stmt, 1, temp);
-	sqlite3_bind_double(stmt, 2, humidity);
-	sqlite3_bind_double(stmt, 3, rain);
-	sqlite3_bind_int(stmt, 4, press);
-	sqlite3_bind_double(stmt, 5, wind_speed);
+	sqlite3_bind_double(stmt, 1, data->temp);
+	sqlite3_bind_double(stmt, 2, data->humidity);
+	sqlite3_bind_double(stmt, 3, data->rain);
+	sqlite3_bind_int(stmt, 4, data->pressure);
+	sqlite3_bind_double(stmt, 5, data->wind_speed);
 	sqlite3_bind_int(stmt, 6, wind_gusts);
-	sqlite3_bind_int(stmt, 7, wind_dir);
+	sqlite3_bind_int(stmt, 7, data->wind_dir);
 
 	if (sqlite3_step(stmt) != SQLITE_DONE) {
 		fprintf(stderr, "Unable to do query: %s\n", sqlite3_errmsg(db));

@@ -13,7 +13,7 @@
 #include <signal.h>
 
 #include "serial.h"
-#include "serial.h"
+#include "station.h"
 #include "db.h"
 
 #define DEFAULT_DB_FILE "weather.db"
@@ -21,6 +21,8 @@
 #define DEFAULT_PID_FILE "/var/run/weatherd.pid"
 #define DEFAULT_LOG "/var/log/weatherd.log"
 #define DEFAULT_BAUDR 9600
+#define SAMPLE_PERIOD 5
+#define SAVE_PERIOD 5*60
 
 /* save data to db every 5 seconds */
 #define SAVE_PERIOD 5*60
@@ -98,6 +100,26 @@ static void usage(const char *name)
 
 static void loop(int fd)
 {
+	int cycles = 0;
+	struct s_message data;
+
+	while (1) {
+		data = station_read(fd);
+		//TODO do averaging, gusts calculation...
+
+		sleep(SAMPLE_PERIOD);
+		cycles++;
+
+		if (cycles == SAVE_PERIOD/SAMPLE_PERIOD)
+			db_add_weather(&data, 0);
+
+		//one hour elapsed
+		if (cycles == 3600/SAMPLE_PERIOD){
+			cycles = 0;
+			station_rain_reset(fd);
+			db_add_rain(data.rain);
+		}
+	}
 }
 
 int main(int argc, char **argv)
