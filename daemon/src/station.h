@@ -17,6 +17,12 @@ struct s_message {
 	int wind_dir;
 };
 
+
 extern struct s_message station_read(int fd);
+
+/*
+ * Reset rain counter
+ */
+extern void station_rain_reset(int fd);
 
 #endif

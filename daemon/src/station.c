@@ -76,3 +76,11 @@ struct s_message station_read(int fd)
 
 	return decode_message(buffer);
 }
+
+/*
+ * Reset rain counter
+ */
+void station_rain_reset(int fd)
+{
+	serial_printf(fd, "#R@;");
+}
