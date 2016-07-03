@@ -7,7 +7,7 @@
 CC=gcc
 LD=gcc
 CFLAGS=-Wall -O2
-LDFLAGS=-lsqlite3
+LDFLAGS=-lsqlite3 -lm
 
 #dirs
 OBJDIR=obj
