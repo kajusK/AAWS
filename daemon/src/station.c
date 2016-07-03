@@ -60,7 +60,7 @@ static struct s_message decode_message(char *message)
 	return msg;
 }
 
-struct s_message read_station(int fd)
+struct s_message station_read(int fd)
 {
 	char buffer[100];
 	char *loc = buffer;

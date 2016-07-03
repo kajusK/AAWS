@@ -17,6 +17,6 @@ struct s_message {
 	int wind_dir;
 };
 
-extern struct s_message read_station(int fd);
+extern struct s_message station_read(int fd);
 
 #endif
