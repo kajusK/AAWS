@@ -171,3 +171,11 @@ int serial_read(int fd, void *buf, size_t count)
 {
 	return read(fd, buf, count);
 }
+
+int serial_getc(int fd)
+{
+	int c;
+	read(fd, &c, 1);
+
+	return c;
+}

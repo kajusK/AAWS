@@ -17,9 +17,6 @@ struct s_message {
 	int wind_dir;
 };
 
-/*
- * Decode message (#X:123.456;Y:567.89;@) to structure
- */
-extern struct s_message decode_message(char *message);
+extern struct s_message read_station(int fd);
 
 #endif

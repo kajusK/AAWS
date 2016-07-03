@@ -36,4 +36,6 @@ extern int serial_read_noblock(int fd, void *buf, size_t count);
 
 extern int serial_read(int fd, void *buf, size_t count);
 
+extern int serial_getc(int fd);
+
 #endif
