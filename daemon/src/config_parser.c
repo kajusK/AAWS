@@ -89,6 +89,19 @@ static int tobool(char *str)
 	return -1;
 }
 
+static char *remove_quote(char *str)
+{
+	char *end = str + strlen(str) - 1;
+
+	if (str[0] == '"' || str[0] == '\'')
+		str++;
+
+	if (*end == '"' || *end == '\'')
+		*end = '\0';
+
+	return str;
+}
+
 static int config_assign(struct s_config_parse *conf, char *value, char *name,
 			 int line)
 {
@@ -112,6 +125,7 @@ static int config_assign(struct s_config_parse *conf, char *value, char *name,
 		*((float *) conf->value) = strtof(value, NULL);
 		break;
 	case C_STRING:
+		value = remove_quote(value);
 		strcpy((char *) conf->value, value);
 		break;
 	case C_BOOL:

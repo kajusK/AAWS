@@ -28,18 +28,19 @@ struct s_config_parse {
  *	name = value
  *
  * Example (use lowercase names only):
- *	struct s_config_parse conf[3] = {{"int", (void *) &number, C_INT},
+ *	struct s_config_parse conf[4] = {{"int", (void *) &number, C_INT},
  *			{"float", (void *) &f, C_FLOAT},
  *			{"bool", (void *) &boolean, C_BOOL},
  *			{"text", (void *) string, C_STRING}};
- *	config_parse("config.txt", &conf, 3);
+ *	config_parse("config.txt", &conf, 4);
  *
  * config.txt:
  *	#comment
  *	int = 55
  *	float = -5.25
  *	bool = true
- *	test = ahoj svete
+ *	text = hello world
+ *	text2 = "hello world 2"
  */
 extern int config_parse(const char *filename, struct s_config_parse conf[],
 			int count);
