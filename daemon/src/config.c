@@ -31,17 +31,21 @@ static char *str_trim(char *str)
 	return str;
 }
 
-int config_parse(struct s_config *config, char *filename)
+int config_parse(struct s_config *config, const char *filename)
 {
 	char buf[256];
 	char *saveptr, *c, *name, *value;
+	int line = 0;
 	FILE *f;
 
 	f = fopen(filename, "r");
-	if (f == NULL)
+	if (f == NULL) {
+		fprintf(stderr, "Unable to open config file %s", filename);
 		return -1;
+	}
 
 	while ((c = fgets(buf, sizeof(buf), f)) != NULL) {
+		line++;
 		if (c[0] == '\n' || c[0] == '#')
 			continue;
 
@@ -50,7 +54,8 @@ int config_parse(struct s_config *config, char *filename)
 			continue;
 		value = strtok_r(NULL, "=", &saveptr);
 		if (value == NULL) {
-			fprintf(stderr, "Empty config option '%s':", name);
+			fprintf(stderr, "Error parsing config '%s', line %d\n",
+				str_trim(name), line);
 			continue;
 		}
 
