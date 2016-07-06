@@ -11,17 +11,7 @@
 #include <string.h>
 #include <ctype.h>
 
-typedef enum {
-	C_INT,
-	C_FLOAT,
-	C_STRING,
-} c_type;
-
-struct s_config_parse {
-	char *name ;
-	void *value;
-	c_type type;
-};
+#include "config_parser.h"
 
 /* trim whitespaces on beginnign and end of a string */
 static char *str_trim(char *str)
