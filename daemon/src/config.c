@@ -16,7 +16,7 @@ struct s_config {
 };
 
 /* trim whitespaces on beginnign and end of a string */
-static void str_trim(char *str)
+static char *str_trim(char *str)
 {
 	char *end;
 
@@ -28,6 +28,7 @@ static void str_trim(char *str)
 		end--;
 
 	*(end+1) = '\0';
+	return str;
 }
 
 int config_parse(struct s_config *config, char *filename)
@@ -47,14 +48,19 @@ int config_parse(struct s_config *config, char *filename)
 		name = strtok_r(buf, "=", &saveptr);
 		if (name == NULL)
 			continue;
-		value = strtok_r(buf, "=", &saveptr);
+		value = strtok_r(NULL, "=", &saveptr);
 		if (value == NULL) {
 			fprintf(stderr, "Empty config option '%s':", name);
 			continue;
 		}
 
-		str_trim(name);
-		str_trim(value);
+		name = str_trim(name);
+		value = str_trim(value);
+		if (strlen(value) == 0) {
+			fprintf(stderr, "Empty config option '%s', line %d\n",
+				name, line);
+			continue;
+		}
 	}
 
 	fclose(f);
