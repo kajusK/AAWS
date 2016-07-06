@@ -34,7 +34,7 @@ static char *str_trim(char *str)
 int config_parse(struct s_config *config, const char *filename)
 {
 	char buf[256];
-	char *saveptr, *c, *name, *value;
+	char *saveptr, *name, *value;
 	int line = 0;
 	FILE *f;
 
@@ -44,9 +44,9 @@ int config_parse(struct s_config *config, const char *filename)
 		return -1;
 	}
 
-	while ((c = fgets(buf, sizeof(buf), f)) != NULL) {
+	while (fgets(buf, sizeof(buf), f) != NULL) {
 		line++;
-		if (c[0] == '\n' || c[0] == '#')
+		if (buf[0] == '\n' || buf[0] == '#')
 			continue;
 
 		name = strtok_r(buf, "=", &saveptr);
