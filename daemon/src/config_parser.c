@@ -66,9 +66,34 @@ static int is_float(char *str)
 	return 1;
 }
 
+static void strtolow(char *str)
+{
+	for (int i = 0; i < strlen(str); i++)
+		str[i] = tolower(str[i]);
+}
+
+static int tobool(char *str)
+{
+	if (strcmp("true", str) == 0 || strcmp("yes", str) == 0)
+		return 1;
+	if (strcmp("false", str) == 0 || strcmp("no", str) == 0)
+		return 0;
+
+	if (strlen(str) == 1) {
+		if (str[0] == '0')
+			return 0;
+		if (isdigit(str[0]))
+			return 1;
+	}
+
+	return -1;
+}
+
 static int config_assign(struct s_config_parse *conf, char *value, char *name,
 			 int line)
 {
+	int boolean;
+
 	switch (conf->type) {
 	case C_INT:
 		if (!is_int(value)) {
@@ -89,20 +114,21 @@ static int config_assign(struct s_config_parse *conf, char *value, char *name,
 	case C_STRING:
 		strcpy((char *) conf->value, value);
 		break;
+	case C_BOOL:
+		boolean = tobool(value);
+		if (boolean == -1) {
+			fprintf(stderr, "Option '%s' must be either 'true' "
+				"or 'false', line %d\n", name, line);
+			return -1;
+		}
+		*((int *) conf->value) = boolean;
+
+		break;
 	}
 
 	return 0;
 }
 
-/*
- * Parse config file into structure
- *
- * Example:
- *	struct s_config_parse conf[3] = {{"int", (void *) &number, C_INT},
- *			{"float", (void *) &f, C_FLOAT},
- *			{"text", (void *) string, C_STRING}};
- *	config_parse("config.txt", &conf, 3);
- */
 int config_parse(const char *filename, struct s_config_parse conf[], int count)
 {
 	char buf[256];
@@ -134,6 +160,9 @@ int config_parse(const char *filename, struct s_config_parse conf[], int count)
 
 		name = str_trim(name);
 		value = str_trim(value);
+		strtolow(name);
+		strtolow(value);
+
 		if (strlen(value) == 0) {
 			fprintf(stderr, "Empty config option '%s', line %d\n",
 				name, line);
