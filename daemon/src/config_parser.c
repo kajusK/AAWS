@@ -74,6 +74,8 @@ static void strtolow(char *str)
 
 static int tobool(char *str)
 {
+	strtolow(str);
+
 	if (strcmp("true", str) == 0 || strcmp("yes", str) == 0)
 		return 1;
 	if (strcmp("false", str) == 0 || strcmp("no", str) == 0)
@@ -175,7 +177,6 @@ int config_parse(const char *filename, struct s_config_parse conf[], int count)
 		name = str_trim(name);
 		value = str_trim(value);
 		strtolow(name);
-		strtolow(value);
 
 		if (strlen(value) == 0) {
 			fprintf(stderr, "Empty config option '%s', line %d\n",
