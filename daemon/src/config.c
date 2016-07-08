@@ -8,7 +8,7 @@
 
 #include <string.h>
 
-#include "config_parser.h"
+#include "utils/config_parser.h"
 #include "config.h"
 
 static struct s_config conf;
