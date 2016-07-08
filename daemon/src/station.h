@@ -25,4 +25,9 @@ extern struct s_message station_read(int fd);
  */
 extern void station_rain_reset(int fd);
 
+/*
+ * Check if station is alive
+ */
+extern int station_alive(int fd);
+
 #endif
