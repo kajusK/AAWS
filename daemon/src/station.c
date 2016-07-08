@@ -84,3 +84,25 @@ void station_rain_reset(int fd)
 {
 	serial_printf(fd, "#R@;");
 }
+
+/*
+ * Check if station is alive
+ */
+int station_alive(int fd)
+{
+	char c;
+	int count = 0;
+
+	serial_printf(fd, "#R@;");
+
+	//wait for data to show up on serial line
+	while (serial_read_noblock(fd, &c, 1) == 0 && count++ < 50)
+		;
+	if (count == 50)
+		return 0;
+
+	while (serial_getc(fd) != '@')
+		;
+
+	return 1;
+}
