@@ -48,6 +48,7 @@ static int daemonize(char *pid_file, char *log)
 	if (pid > 0) {
 		f = fopen(pid_file, "w");
 		if (f == NULL) {
+			serial_close(serial_fd);
 			fprintf(stderr, "Unable to create pid file, ending\n");
 			exit(1);
 		}
