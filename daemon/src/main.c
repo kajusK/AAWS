@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
+#include <string.h>
 
 #include "serial.h"
 #include "station.h"
@@ -22,9 +23,8 @@
 #define DEFAULT_LOG "/var/log/weatherd.log"
 #define DEFAULT_BAUDR 9600
 #define SAMPLE_PERIOD 5
-#define SAVE_PERIOD 5*60
 
-/* save data to db every 5 seconds */
+/* save data to db every 5 minutes */
 #define SAVE_PERIOD 5*60
 
 static int serial_fd = -1;
@@ -101,23 +101,57 @@ static void usage(const char *name)
 static void loop(int fd)
 {
 	int cycles = 0;
+	int hour_counter = 0;
 	struct s_message data;
+	struct s_message avg;
+	float wind_max = 0;
+	float rain_prev = 0;
+
+	memset(&avg, 0, sizeof(avg));
 
 	while (1) {
 		data = station_read(fd);
-		//TODO do averaging, gusts calculation...
+
+		wind_max = data.wind_speed > wind_max ? data.wind_speed : wind_max;
+		//average data
+		avg.wind_speed += data.wind_speed;
+		avg.wind_dir += data.wind_dir;
+		avg.humidity += data.humidity;
+		avg.temp += data.temp;
+		avg.pressure += data.pressure;
 
 		sleep(SAMPLE_PERIOD);
 		cycles++;
+		hour_counter++;
 
-		if (cycles == SAVE_PERIOD/SAMPLE_PERIOD)
-			db_add_weather(&data, 0);
+		//save period elapsed
+		if (cycles >= SAVE_PERIOD/SAMPLE_PERIOD) {
+			cycles = 0;
+
+			//get average
+			avg.wind_speed = avg.wind_speed / cycles;
+			avg.wind_dir = avg.wind_dir / cycles;
+			avg.humidity = avg.humidity / cycles;
+			avg.temp = avg.temp / cycles;
+			avg.pressure = avg.pressure / cycles;
+			//get rain intensity in last SAVE_PERIOD
+			avg.rain = (data.rain - rain_prev)*3600.0/SAVE_PERIOD;
+
+			db_add_weather(&avg, wind_max);
+
+			//clear stuff
+			wind_max = 0;
+			memset(&avg, 0, sizeof(avg));
+			rain_prev = data.rain;
+		}
 
 		//one hour elapsed
-		if (cycles == 3600/SAMPLE_PERIOD){
-			cycles = 0;
-			station_rain_reset(fd);
+		if (hour_counter >= 3600/SAMPLE_PERIOD){
+			hour_counter = 0;
 			db_add_rain(data.rain);
+
+			station_rain_reset(fd);
+			rain_prev = 0;
 		}
 	}
 }
