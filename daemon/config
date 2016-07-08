@@ -1,0 +1,19 @@
+#
+# AAWS Automated Amateur Weather station configuration
+#
+
+#Serial port used by electronics
+serial = /dev/ttyAMA0
+baudrate = 9600
+
+#sqlite database filename to store data to
+#database = /var/lib/aaws/weather.db
+
+#save data to DB every save_period seconds
+#values between 120 and 900 are reasonable, shorter might produce incorrect
+#wind gusts reading
+#save_period = 300
+
+#housekeeping stuff
+#log_file = /var/log/aaws.log
+#pid_file = /var/run/aaws_daemon.pid

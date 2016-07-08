@@ -16,16 +16,12 @@
 #include "serial.h"
 #include "station.h"
 #include "db.h"
+#include "config.h"
 
-#define DEFAULT_DB_FILE "weather.db"
-#define DEFAULT_SERIAL "/dev/ttyAMA0"
-#define DEFAULT_PID_FILE "/var/run/weatherd.pid"
-#define DEFAULT_LOG "/var/log/weatherd.log"
-#define DEFAULT_BAUDR 9600
+#define AAWS_VERSION "0.1"
+#define CONF_DEFAULT "/etc/aaws/config"
 #define SAMPLE_PERIOD 5
-
-/* save data to db every 5 minutes */
-#define SAVE_PERIOD 5*60
+#define RETRY_INTERVAL 10
 
 static int serial_fd = -1;
 
@@ -88,17 +84,17 @@ static int daemonize(char *pid_file, char *log)
 static void usage(const char *name)
 {
 	fprintf(stderr,
-			"Usage: %s [-s serial] [options]\n\n"
-			"-h\t\t\tShow this help and exit\n"
-			"-s serial\t\tSerial interface to read data from\n"
-			"-o database\t\tDatabase file to store data to\n"
-			"-b baudrate\t\tBaudrate for serial\n"
-			"-d\t\t\tRun as a daemon\n"
-			"\t-p filename\tPid filename\n"
-			"\t-l filename\tFile to store logs to\n", name);
+		"AAWS - weather station recording daemon\n"
+		"Usage: %s [-c filename]\n\n"
+		"Options:\n"
+		"  -h\t\t\tShow this help and exit\n"
+		"  -v\t\t\tPrint version info and exit\n"
+		"  -t\t\t\tTest configuraion and exit\n"
+		"  -c filename\t\tSet config file (default "CONF_DEFAULT")\n"
+		"  -f\t\t\tRun in foreground\n", name);
 }
 
-static void loop(int fd)
+static void loop(int fd, int save_period)
 {
 	int cycles = 0;
 	int hour_counter = 0;
@@ -125,7 +121,7 @@ static void loop(int fd)
 		hour_counter++;
 
 		//save period elapsed
-		if (cycles >= SAVE_PERIOD/SAMPLE_PERIOD) {
+		if (cycles >= save_period/SAMPLE_PERIOD) {
 			cycles = 0;
 
 			//get average
@@ -135,7 +131,7 @@ static void loop(int fd)
 			avg.temp = avg.temp / cycles;
 			avg.pressure = avg.pressure / cycles;
 			//get rain intensity in last SAVE_PERIOD
-			avg.rain = (data.rain - rain_prev)*3600.0/SAVE_PERIOD;
+			avg.rain = (data.rain - rain_prev)*3600.0/save_period;
 
 			db_add_weather(&avg, wind_max);
 
@@ -158,38 +154,30 @@ static void loop(int fd)
 
 int main(int argc, char **argv)
 {
-	char *serial = DEFAULT_SERIAL;
-	char *db_file = DEFAULT_DB_FILE;
-	char *log = DEFAULT_LOG;
-	char *pid_file = DEFAULT_PID_FILE;
-	int baudr = DEFAULT_BAUDR;
-	int daemon = 0;
-
 	int opt;
+	char *conf_filename = CONF_DEFAULT;
+	int test_config = 0;
+	int daemon = 1;
+	struct s_config *conf;
 
-	while((opt = getopt(argc, argv, "hds:o:p:l:b:")) != -1) {
+	while((opt = getopt(argc, argv, "hc:tfv")) != -1) {
 		switch (opt) {
 		case 'h':
 			usage(argv[0]);
 			exit(0);
 			break;
-		case 'd':
-			daemon = 1;
+		case 'v':
+			printf("AAWS version: "AAWS_VERSION"\n");
+			exit(0);
 			break;
-		case 'b':
-			baudr = atoi(optarg);
+		case 't':
+			test_config = 1;
 			break;
-		case 's':
-			serial = optarg;
+		case 'f':
+			daemon = 0;
 			break;
-		case 'o':
-			db_file = optarg;
-			break;
-		case 'p':
-			pid_file = optarg;
-			break;
-		case 'l':
-			log = optarg;
+		case 'c':
+			conf_filename = optarg;
 			break;
 		default:
 			usage(argv[0]);
@@ -197,15 +185,35 @@ int main(int argc, char **argv)
 		}
 	}
 
-	serial_fd = serial_open(serial, baudr);
-	db_init(db_file);
+	if (conf_read(conf_filename) != 0) {
+		fprintf(stderr, "Incorrect config file, ending...\n");
+		exit(-1);
+	}
+
+	if (test_config) {
+		printf("Config file is OK\n");
+		exit(0);
+	}
+
+	conf = conf_get();
+
+	if (db_init(conf->db_file) != 0)
+		exit(-1);
+	if ((serial_fd = serial_open(conf->serial, conf->baudr)) < 0)
+		exit(-1);
 
 	signal(SIGINT, sig_handler);
 
-	if (daemon)
-		daemonize(pid_file, log);
+	while (!station_alive(serial_fd)) {
+		fprintf(stderr, "Station is not responding, "
+			"trying again in %d seconds...\n", RETRY_INTERVAL);
+		sleep(RETRY_INTERVAL);
+	}
 
-	loop(serial_fd);
+	if (daemon)
+		daemonize(conf->pid_file, conf->log_file);
+
+	loop(serial_fd, conf->save_period);
 
 	return 0;
 }
