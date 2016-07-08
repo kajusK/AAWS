@@ -39,22 +39,22 @@ static int daemonize(char *pid_file, char *log)
 	FILE *f;
 	pid_t pid, sid;
 
-	printf("Will become a daemon...\n");
-
 	pid = fork();
 	if (pid < 0) {
-		fprintf(stderr, "Unable to fork, running anyway...\n");
+		fprintf(stderr, "Unable to fork, running in foreground...\n");
 		return -1;
 	}
 
 	if (pid > 0) {
 		f = fopen(pid_file, "w");
 		if (f == NULL) {
-			fprintf(stderr, "Unable to create pid file\n");
+			fprintf(stderr, "Unable to create pid file, ending\n");
 			exit(1);
 		}
 		fprintf(f, "%d", pid);
 		fclose(f);
+
+		printf("%d\n", pid);
 		exit(0);
 	}
 
@@ -67,7 +67,7 @@ static int daemonize(char *pid_file, char *log)
 	if (chdir("/var") < 0)
 		fprintf(stderr, "Warning: unable to change directory\n");
 
-	if (log != 0) {
+	if (log != NULL) {
 		if (freopen(log, "a", stdout) == NULL)
 			fprintf(stderr, "Warning: unable to redirect stdout\n");
 		if (freopen(log, "a", stderr) == NULL)
