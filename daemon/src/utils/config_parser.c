@@ -154,7 +154,7 @@ int config_parse(const char *filename, struct s_config_parse conf[], int count)
 
 	f = fopen(filename, "r");
 	if (f == NULL) {
-		fprintf(stderr, "Unable to open config file %s", filename);
+		fprintf(stderr, "Unable to open config file %s\n", filename);
 		return -2;
 	}
 
