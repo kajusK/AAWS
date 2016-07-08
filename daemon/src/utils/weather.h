@@ -20,4 +20,9 @@ extern float press_relative(float absolute, int elevation);
  */
 extern float dew_point(float humidity, float temp);
 
+extern float CtoF(float value);
+extern float MStoMPH(float value);
+extern float MMtoINCH(float value);
+extern float HPAtoINCH(float value);
+
 #endif

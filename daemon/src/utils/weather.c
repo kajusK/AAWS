@@ -28,3 +28,23 @@ float dew_point(float humidity, float temp)
 	float subres = logf(humidity/100*powf(M_E, 17.67/(243.5+temp)));
 	return 243.5*subres/(17.67-subres);
 }
+
+float CtoF(float value)
+{
+	return value*9/5 + 32;
+}
+
+float MStoMPH(float value)
+{
+	return value/0.44704;
+}
+
+float MMtoINCH(float value)
+{
+	return value*0.03937;
+}
+
+float HPAtoINCH(float value)
+{
+	return value*0.02952998751;
+}
