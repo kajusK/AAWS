@@ -98,6 +98,34 @@ static void separate_url(char *url, char *host)
 	host[last - first + 1] = '\0';
 }
 
+static void base64_encode(const char *src, int len, char *dest)
+{
+	const char b64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+	char *p = dest;
+	int i;
+
+	for (i = 0; i < len - len%3; i += 3) {
+		*p++ = b64[(src[i] >> 2) & 0x3F];
+		*p++ = b64[((src[i] & 0x3) << 4) | ((src[i+1] & 0xF0) >> 4)];
+		*p++ = b64[((src[i+1] & 0xF) << 2) | ((src[i+2] & 0xC0) >> 6)];
+		*p++ = b64[src[i+2] & 0x3F];
+	}
+
+	if (i < len) {
+		*p++ = b64[(src[i] >> 2) & 0x3F];
+		if (i == (len - 1)) {
+			*p++ = b64[(src[i] & 0x3) << 4];
+			*p++ = '=';
+		} else {
+			*p++ = b64[((src[i] & 0x3) << 4) | ((src[i+1] & 0xF0) >> 4)];
+			*p++ = b64[(src[i+1] & 0xF) << 2];
+		}
+		*p++ = '=';
+	}
+
+	*p++ = '\0';
+}
+
 /*
  * Send http GET request and store reply in response
  *
