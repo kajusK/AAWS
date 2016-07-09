@@ -100,10 +100,12 @@ static void separate_url(char *url, char *host)
 
 /*
  * Send http GET request and store reply in response
+ *
+ * HTML response code is returned
  */
 int http_get(char *url, char *response, int maxlen)
 {
-	int fd;
+	int fd, response_code = 0;
 	char req[512], host[100];
 
 	separate_url(url, host);
@@ -115,7 +117,10 @@ int http_get(char *url, char *response, int maxlen)
 	if (fd == -1)
 		return -1;
 
-	socket_rw(fd, req, response, maxlen);
+	if (socket_rw(fd, req, response, maxlen) == -1)
+		return -1;
 
-	return 0;
+	sscanf(response, "HTTP/%*f %d", &response_code);
+
+	return response_code;
 }

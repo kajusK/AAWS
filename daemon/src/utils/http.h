@@ -10,6 +10,8 @@
 
 /*
  * Send http GET request and store reply in response
+ *
+ * HTML response code is returned
  */
 extern int http_get(char *url, char *response, int maxlen);
 
