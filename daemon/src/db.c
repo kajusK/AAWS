@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <sqlite3.h>
 
-#include "station.h"
+#include "utils/weather.h"
 #include "db.h"
 
 static sqlite3 *db;
@@ -70,7 +70,7 @@ void db_close()
 	sqlite3_close(db);
 }
 
-int db_add_weather(struct s_message *data, float wind_gusts)
+int db_add_weather(struct s_weather *data)
 {
 	int res = 0;
 	sqlite3_stmt *stmt;
@@ -89,7 +89,7 @@ int db_add_weather(struct s_message *data, float wind_gusts)
 	sqlite3_bind_double(stmt, 3, data->rain);
 	sqlite3_bind_int(stmt, 4, data->pressure);
 	sqlite3_bind_double(stmt, 5, data->wind_speed);
-	sqlite3_bind_int(stmt, 6, wind_gusts);
+	sqlite3_bind_int(stmt, 6, data->wind_gusts);
 	sqlite3_bind_int(stmt, 7, data->wind_dir);
 
 	if (sqlite3_step(stmt) != SQLITE_DONE) {

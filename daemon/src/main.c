@@ -13,6 +13,7 @@
 #include <signal.h>
 #include <string.h>
 
+#include "utils/weather.h"
 #include "serial.h"
 #include "station.h"
 #include "db.h"
@@ -100,22 +101,24 @@ static void loop(int fd, int save_period)
 	int cycles = 0;
 	int hour_counter = 0;
 	struct s_message data;
-	struct s_message avg;
-	float wind_max = 0;
+	struct s_weather weather;
 	float rain_prev = 0;
 
-	memset(&avg, 0, sizeof(avg));
+	memset(&weather, 0, sizeof(weather));
 
 	while (1) {
 		data = station_read(fd);
 
-		wind_max = data.wind_speed > wind_max ? data.wind_speed : wind_max;
+		if (data.wind_speed > weather.wind_gusts) {
+			weather.wind_dir = data.wind_dir;
+			weather.wind_gusts = data.wind_speed;
+		}
 		//average data
-		avg.wind_speed += data.wind_speed;
-		avg.wind_dir += data.wind_dir;
-		avg.humidity += data.humidity;
-		avg.temp += data.temp;
-		avg.pressure += data.pressure;
+		weather.wind_speed += data.wind_speed;
+		weather.wind_dir += data.wind_dir;
+		weather.humidity += data.humidity;
+		weather.temp += data.temp;
+		weather.pressure += data.pressure;
 
 		sleep(SAMPLE_PERIOD);
 		cycles++;
@@ -126,19 +129,18 @@ static void loop(int fd, int save_period)
 			cycles = 0;
 
 			//get average
-			avg.wind_speed = avg.wind_speed / cycles;
-			avg.wind_dir = avg.wind_dir / cycles;
-			avg.humidity = avg.humidity / cycles;
-			avg.temp = avg.temp / cycles;
-			avg.pressure = avg.pressure / cycles;
+			weather.wind_speed = weather.wind_speed / cycles;
+			weather.wind_dir = weather.wind_dir / cycles;
+			weather.humidity = weather.humidity / cycles;
+			weather.temp = weather.temp / cycles;
+			weather.pressure = weather.pressure / cycles;
 			//get rain intensity in last SAVE_PERIOD
-			avg.rain = (data.rain - rain_prev)*3600.0/save_period;
+			weather.rain = (data.rain - rain_prev)*3600.0/save_period;
 
-			db_add_weather(&avg, wind_max);
+			db_add_weather(&weather);
 
 			//clear stuff
-			wind_max = 0;
-			memset(&avg, 0, sizeof(avg));
+			memset(&weather, 0, sizeof(weather));
 			rain_prev = data.rain;
 		}
 
