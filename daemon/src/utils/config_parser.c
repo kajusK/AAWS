@@ -145,12 +145,37 @@ static int config_assign(struct s_config_parse *conf, char *value, char *name,
 	return 0;
 }
 
-int config_parse(const char *filename, struct s_config_parse conf[], int count)
+static int conf_get_cat(char *name, struct s_config_cat **cur_cat,
+			struct s_config_cat cat[], int count)
+{
+	char *end = name + strlen(name) - 1;
+	name++;
+	*end = '\0';
+
+	for (int i = 0; i < count; i++) {
+		if (strcmp(cat[i].name, name) == 0) {
+			*cur_cat = &cat[i];
+			*end = ']';
+			return 0;
+		}
+	}
+
+	*end = ']';
+
+	return -1;
+}
+
+int config_parse_internal(const char *filename, struct s_config_cat cat[],
+			  int count, int use_cat)
 {
 	char buf[256];
 	char *saveptr, *name, *value;
 	int line = 0, assigned, ret = 0;
 	FILE *f;
+	struct s_config_cat *cur_cat = NULL;
+
+	if (count == 1 || !use_cat)
+		cur_cat = &cat[0];
 
 	f = fopen(filename, "r");
 	if (f == NULL) {
@@ -163,21 +188,36 @@ int config_parse(const char *filename, struct s_config_parse conf[], int count)
 		if (buf[0] == '\n' || buf[0] == '#')
 			continue;
 
+		/* Parse and clean up item name */
 		name = strtok_r(buf, "=", &saveptr);
 		if (name == NULL)
 			continue;
+		name = str_trim(name);
+		strtolow(name);
+		if (use_cat && name[0] == '[' && name[strlen(name)-1] == ']') {
+			if (conf_get_cat(name, &cur_cat, cat, count) != 0) {
+				fprintf(stderr, "Incorrect category '%s'"
+						", line %d\n", name, line);
+				return -1;
+			}
+			//TODO check rest of the line
+			continue;
+		}
+		if (cur_cat == NULL) {
+			fprintf(stderr, "You must specify category first"
+					"! Line %d\n", line);
+			return -1;
+		}
+
+		/* Parse and clean up item value */
 		value = strtok_r(NULL, "=", &saveptr);
 		if (value == NULL) {
 			fprintf(stderr, "Error parsing config '%s', line %d\n",
-				str_trim(name), line);
+				name, line);
 			ret = -1;
 			continue;
 		}
-
-		name = str_trim(name);
 		value = str_trim(value);
-		strtolow(name);
-
 		if (strlen(value) == 0) {
 			fprintf(stderr, "Empty config option '%s', line %d\n",
 				name, line);
@@ -185,12 +225,13 @@ int config_parse(const char *filename, struct s_config_parse conf[], int count)
 			continue;
 		}
 
+		/* try to match name with known config options */
 		assigned = 0;
-		for (int i = 0; i < count; i++) {
-			if (strcmp(name, conf[i].name) != 0)
+		for (int i = 0; i < cur_cat->count; i++) {
+			if (strcmp(name, cur_cat->items[i].name) != 0)
 				continue;
 
-			if (config_assign(&conf[i], value, name, line) != 0)
+			if (config_assign(&cur_cat->items[i], value, name, line) != 0)
 				ret = -1;
 			assigned = 1;
 		}
@@ -206,3 +247,13 @@ int config_parse(const char *filename, struct s_config_parse conf[], int count)
 	return ret;
 }
 
+int config_parse(const char *filename, struct s_config_parse conf[], int count)
+{
+	struct s_config_cat cat[] = {{"", count, conf}};
+	return config_parse_internal(filename, cat, 1, 0);
+}
+
+int config_parse_cat(const char *filename, struct s_config_cat conf[], int count)
+{
+	return config_parse_internal(filename, conf, count, 1);
+}
