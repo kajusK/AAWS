@@ -38,7 +38,7 @@
 #include "dht22.h"
 #include "rain.h"
 #include "wind.h"
-#include "serial.h"
+#include "utils/serial.h"
 
 ISR(BADISR_vect)
 {

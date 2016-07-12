@@ -14,7 +14,7 @@
 
 #include "config.h"
 #include "bmp180.h"
-#include "i2c.h"
+#include "utils/i2c.h"
 
 #define BMP180_ADDR		0x77
 
