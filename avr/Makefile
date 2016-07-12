@@ -4,24 +4,25 @@
 # Jakub Kaderka 2016
 ###########################################
 #used MCU
-MCU=attiny4313
+MCU=atmega32
 #used frequency
-F_CPU=1000000UL
+F_CPU=8000000UL
 
+#program name
 PROGRAM=weather
-
-#compiler and linker config
-CC=avr-gcc
-LD=avr-gcc
-CFLAGS=-Wall -Os -DF_CPU=$(F_CPU) -mmcu=$(MCU) -std=gnu99 -Wstrict-prototypes -ffunction-sections -fdata-sections
-LDFLAGS=-mmcu=$(MCU) -Wl,--gc-sections
-OBJCOPY=avr-objcopy
-UPLOADER=avrdude
-UPLOADER_FLAGS=-c usbtiny -p $(MCU) -B4
 
 #dirs
 OBJDIR=obj
 SRCDIRS=src
+
+#compiler and linker config
+CC=avr-gcc
+LD=avr-gcc
+CFLAGS=-Wall -Os -I $(SRCDIRS) -DF_CPU=$(F_CPU) -mmcu=$(MCU) -std=gnu99 -Wstrict-prototypes -ffunction-sections -fdata-sections
+LDFLAGS=-mmcu=$(MCU) -Wl,--gc-sections
+OBJCOPY=avr-objcopy
+UPLOADER=avrdude
+UPLOADER_FLAGS=-c usbtiny -p $(MCU)
 
 #resulting bin
 TARGET=$(PROGRAM).hex
