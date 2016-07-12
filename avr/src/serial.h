@@ -1,5 +1,6 @@
 /*
  * Serial communications using stdin/out, stderr is redirected to stdout
+ * Global interrupt must be enabled
  *
  * Using one stop bit and no parity
  *
@@ -15,7 +16,7 @@
 /*
  * check if there are data in input queue
  *
- * returns 0 if empty, 1 if full
+ * returns 0 if empty, 1 otherwise
  */
 int serial_check_rx(void);
 

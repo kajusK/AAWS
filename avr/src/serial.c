@@ -1,10 +1,10 @@
 /*
  * Serial communications using stdin/out, stderr is redirected to stdout
+ * Global interrupt must be enabled
  *
  * Using one stop bit and no parity
  *
  * Jakub Kaderka 2016
- * TODO: add ISR RX buffer
  */
 
 #include <avr/io.h>
@@ -14,13 +14,43 @@
 #include "config.h"
 #include <util/setbaud.h>
 
+#include "utils/ring_buf.h"
+
+#if defined USART_RXC_vect
+	#define USART_RX_vect USART_RXC_vect
+#endif
+
+#define TX_BUF_LEN 8
+#define RX_BUF_LEN 8
+
+static ring_buf ring_rx, ring_tx;
+static char rxbuf[RX_BUF_LEN], txbuf[TX_BUF_LEN];
+
+ISR(USART_RX_vect)
+{
+	ring_push(&ring_rx, UDR);
+}
+
+ISR(USART_UDRE_vect)
+{
+	if (ring_empty(&ring_tx))
+		UCSRB &= ~_BV(UDRIE);
+	else
+		UDR = ring_pop(&ring_tx);
+}
+
 int serial_putc(char c, FILE *stream)
 {
 	if (c == '\n')
 		serial_putc('\r', stream);
 
-	loop_until_bit_is_set(UCSRA, UDRE);
-	UDR = c;
+	while (ring_full(&ring_tx))
+		;
+	ring_push(&ring_tx, c);
+
+	//enable interrupt for empty TX buffer
+	UCSRB |= _BV(UDRIE);
+
 	return 0;
 }
 
@@ -31,18 +61,19 @@ int serial_stderr_putc(char c, FILE *stream)
 
 int serial_getc(FILE *stream)
 {
-	loop_until_bit_is_set(UCSRA, RXC);
-	return UDR;
+	while (ring_empty(&ring_rx))
+		;
+	return ring_pop(&ring_rx);
 }
 
 /*
  * check if there are data in input queue
  *
- * returns 0 if empty, 1 if full
+ * returns 0 if empty, 1 otherwise
  */
-int serial_check_rx(void)
+uint8_t serial_check_rx(void)
 {
-	return bit_is_set(UCSRA, RXC);
+	return !ring_empty(&ring_rx);
 }
 
 /*
@@ -74,4 +105,10 @@ void serial_init(void)
 	stdin = &s_in;
 	stderr = &s_err;
 	stdout = &s_out;
+
+	ring_init(&ring_rx, rxbuf, RX_BUF_LEN);
+	ring_init(&ring_tx, txbuf, TX_BUF_LEN);
+
+	// enable interrupts
+	UCSRB |= _BV(RXCIE);
 }
