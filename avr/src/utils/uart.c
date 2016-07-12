@@ -39,10 +39,10 @@ ISR(USART_UDRE_vect)
 		UDR = ring_pop(&ring_tx);
 }
 
-int serial_putc(char c, FILE *stream)
+int uart_putc(char c, FILE *stream)
 {
 	if (c == '\n')
-		serial_putc('\r', stream);
+		uart_putc('\r', stream);
 
 	while (ring_full(&ring_tx))
 		;
@@ -54,12 +54,12 @@ int serial_putc(char c, FILE *stream)
 	return 0;
 }
 
-int serial_stderr_putc(char c, FILE *stream)
+int uart_stderr_putc(char c, FILE *stream)
 {
-	return serial_putc(c, stream);
+	return uart_putc(c, stream);
 }
 
-int serial_getc(FILE *stream)
+int uart_getc(FILE *stream)
 {
 	while (ring_empty(&ring_rx))
 		;
@@ -71,7 +71,7 @@ int serial_getc(FILE *stream)
  *
  * returns 0 if empty, 1 otherwise
  */
-uint8_t serial_check_rx(void)
+uint8_t uart_check_rx(void)
 {
 	return !ring_empty(&ring_rx);
 }
@@ -79,7 +79,7 @@ uint8_t serial_check_rx(void)
 /*
  * Open stdin/err/out descriptors, setup avr hardware...
  */
-void serial_init(void)
+void uart_init(void)
 {
 	UBRRH = UBRRH_VALUE;
 	UBRRL = UBRRL_VALUE;
@@ -98,10 +98,10 @@ void serial_init(void)
 #endif
 	UCSRB = _BV(RXEN) | _BV(TXEN);
 
-	// redirect stdout/in to serial
-	static FILE s_out = FDEV_SETUP_STREAM(serial_putc, NULL, _FDEV_SETUP_WRITE);
-	static FILE s_err = FDEV_SETUP_STREAM(serial_stderr_putc, NULL, _FDEV_SETUP_WRITE);
-	static FILE s_in = FDEV_SETUP_STREAM(NULL, serial_getc, _FDEV_SETUP_READ);
+	// redirect stdout/in to uart
+	static FILE s_out = FDEV_SETUP_STREAM(uart_putc, NULL, _FDEV_SETUP_WRITE);
+	static FILE s_err = FDEV_SETUP_STREAM(uart_stderr_putc, NULL, _FDEV_SETUP_WRITE);
+	static FILE s_in = FDEV_SETUP_STREAM(NULL, uart_getc, _FDEV_SETUP_READ);
 	stdin = &s_in;
 	stderr = &s_err;
 	stdout = &s_out;

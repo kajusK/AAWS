@@ -7,8 +7,8 @@
  * Jakub Kaderka 2016
  */
 
-#ifndef _SERIAL_H_
-#define _SERIAL_H_
+#ifndef _UART_H_
+#define _UART_H_
 
 //BAUD and F_CPU must be defined
 //#define BAUD	9600
@@ -18,11 +18,11 @@
  *
  * returns 0 if empty, 1 otherwise
  */
-int serial_check_rx(void);
+int uart_check_rx(void);
 
 /*
  * Open stdin/err/out descriptors, setup avr hardware...
  */
-void serial_init(void);
+void uart_init(void);
 
 #endif

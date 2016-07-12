@@ -38,7 +38,7 @@
 #include "dht22.h"
 #include "rain.h"
 #include "wind.h"
-#include "utils/serial.h"
+#include "utils/uart.h"
 
 ISR(BADISR_vect)
 {
@@ -57,9 +57,12 @@ int main(int argc, char *argv[])
 	uint16_t hum;
 
 	//TODO detect type of reset (watchdog....)
-	serial_init();
-	puts("Weather station, FW version " VERSION);
-	puts("Kajus 2016\n\r");
+	uart_init();
+	sei();
+
+	fputs("Weather station, FW version " VERSION"\n\r", stdout);
+	fputs("Kajus 2016\n\r", stdout);
+
 
 	bmp180_init();
 	rain_init();
