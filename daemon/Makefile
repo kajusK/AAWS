@@ -3,15 +3,16 @@
 #
 # Jakub Kaderka 2016
 ###########################################
-#compiler and linker config
-CC=gcc
-LD=gcc
-CFLAGS=-Wall -O2
-LDFLAGS=-lsqlite3 -lm
-
 #dirs
 OBJDIR=obj
 SRCDIRS=src
+
+#compiler and linker config
+CC=gcc
+LD=gcc
+CFLAGS=-Wall -O2 -I $(SRCDIRS)
+LDFLAGS=-lsqlite3 -lm
+
 
 #resulting bin
 TARGET=weather_daemon
