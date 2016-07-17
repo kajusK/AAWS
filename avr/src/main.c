@@ -160,9 +160,15 @@ int main(int argc, char *argv[])
 		fputs(";@\n", stdout);
 
 		// if bmp180 failed, try to init again
+<<<<<<< HEAD
 		if (state & E_INITBMP180 && bmp180_init() == 0)
 			state &= ~E_INITBMP180;
 
+=======
+		if (state & E_INITBMP180 && bmp180_init() == 0) {
+			state &= ~E_INITBMP180;
+		}
+>>>>>>> 503752cf91daafc3d99e4f381faff4746a0cf8d5
 		delay_s(5);
 	}
 
