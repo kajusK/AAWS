@@ -30,6 +30,9 @@
  * #T;@ - test if station is alive, responds with ACK
  *
  * Jakub Kaderka 2016
+ *
+ *
+ * TODO: Read commands from serial
  */
 
 #include <stdio.h>
@@ -47,6 +50,10 @@
 #include "rain.h"
 #include "wind.h"
 #include "utils/uart.h"
+
+enum sensor_state {
+	E_INITBMP180 = 1 << 0,
+};
 
 ISR(BADISR_vect)
 {
@@ -103,6 +110,7 @@ int main(int argc, char *argv[])
 	int16_t temp;
 	uint32_t pres;
 	uint16_t hum;
+	enum sensor_state state = 0;
 
 	//TODO detect type of reset (watchdog....)
 	uart_init();
@@ -111,7 +119,11 @@ int main(int argc, char *argv[])
 	fputs("Weather station, FW version " VERSION"\n\r", stdout);
 	fputs("Kajus 2016\n\r", stdout);
 
-	bmp180_init();
+	if (bmp180_init() != 0) {
+		state |= E_INITBMP180;
+		fputs("Unable to init bmp180", stderr);
+	}
+
 	rain_init();
 	wind_init();
 
@@ -120,18 +132,22 @@ int main(int argc, char *argv[])
 	//set_sleep_mode()
 
 	while (1) {
-		//TODO print with errors
 		putchar('#');
 
-		bmp180_read(&temp, &pres);
 		fputs("P:", stdout);
-		print_32num(pres, 2);
+		if (state & E_INITBMP180 || bmp180_read(&temp, &pres) != 0)
+			putchar('E');
+		else
+			print_32num(pres, 2);
 
-		dht22_read(&temp, &hum);
 		fputs(";T:", stdout);
-		print_num(temp, 1);
-		fputs(";H:", stdout);
-		print_num(hum, 1);
+		if (dht22_read(&temp, &hum) != 0) {
+			fputs("E;H:E", stdout);
+		} else {
+			print_num(temp, 1);
+			fputs(";H:", stdout);
+			print_num(hum, 1);
+		}
 
 		fputs(";W:", stdout);
 		print_num(wind_speed(), 1);
@@ -142,6 +158,10 @@ int main(int argc, char *argv[])
 		print_num(rain_get(), 1);
 
 		fputs(";@\n", stdout);
+
+		// if bmp180 failed, try to init again
+		if (state & E_INITBMP180 && bmp180_init() == 0)
+			state &= ~E_INITBMP180;
 
 		delay_s(5);
 	}
