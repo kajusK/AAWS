@@ -9,9 +9,9 @@ defined("IN_APP") or die("Unauthorized access");
 
 class Press
 {
-	//returns relative pressure - Prel = Pabs + elevation/8.3
+	//returns relative pressure
 	public static function getCurrent() {
-		$press = Db::latest("pressure") + Config::get("station", "elevation")/8.3;
+		$press = Db::latest("pressure");
 		return round($press, 1);
 	}
 

@@ -2,6 +2,9 @@
 # AAWS Automated Amateur Weather station configuration
 #
 
+#station elevation - necessary for relative pressure calculation
+elevation = 123
+
 #Serial port used by electronics
 serial = /dev/ttyAMA0
 baudrate = 9600

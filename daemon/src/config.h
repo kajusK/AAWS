@@ -14,6 +14,7 @@
 #define DEFAULT_LOG_FILE "/var/log/weatherd.log"
 #define DEFAULT_BAUDR 9600
 #define DEFAULT_SAVE_PERIOD 5*60
+#define DEFAULT_ELEVATION -100
 
 struct s_config {
 	char db_file[256];
@@ -22,6 +23,7 @@ struct s_config {
 	char pid_file[256];
 	char log_file[256];
 	int save_period;
+	int elevation;
 };
 
 /*

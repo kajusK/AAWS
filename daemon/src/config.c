@@ -6,6 +6,7 @@
  * Jakub Kaderka 2016
  */
 
+#include <stdio.h>
 #include <string.h>
 
 #include "utils/config_parser.h"
@@ -23,10 +24,13 @@ static void conf_default(struct s_config *conf)
 	conf->baudr = DEFAULT_BAUDR;
 
 	conf->save_period = DEFAULT_SAVE_PERIOD;
+	conf->elevation = DEFAULT_ELEVATION;
 }
 
 int conf_read(char *filename)
 {
+	int ret = 0;
+
 	conf_default(&conf);
 
 	struct s_config_parse parse[] = {
@@ -36,10 +40,20 @@ int conf_read(char *filename)
 		{"pid_file", (void *) conf.pid_file, C_STRING},
 		{"log_file", (void *) conf.log_file, C_STRING},
 		{"save_period", (void *) conf.log_file, C_INT},
+		{"elevation", (void *) &conf.elevation, C_INT},
 	};
 
-	return config_parse(filename, (struct s_config_parse *)&parse,
+	ret = config_parse(filename, (struct s_config_parse *)&parse,
 		     sizeof(parse)/sizeof(struct s_config_parse));
+	if (ret != 0)
+		return ret;
+
+	if (conf.elevation == DEFAULT_ELEVATION) {
+		fprintf(stderr, "Elevation must be defined in config file '%s' "
+				"to calculate absolute pressure\n", filename);
+		return -1;
+	}
+	return 0;
 }
 
 struct s_config *conf_get(void)

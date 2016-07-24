@@ -96,7 +96,7 @@ static void usage(const char *name)
 		"  -f\t\t\tRun in foreground\n", name);
 }
 
-static void loop(int fd, int save_period)
+static void loop(int fd, int save_period, int elevation)
 {
 	int cycles = 0;
 	int hour_counter = 0;
@@ -133,7 +133,10 @@ static void loop(int fd, int save_period)
 			weather.wind_dir = weather.wind_dir / cycles;
 			weather.humidity = weather.humidity / cycles;
 			weather.temp = weather.temp / cycles;
+
 			weather.pressure = weather.pressure / cycles;
+			weather.pressure = press_relative(weather.pressure, elevation);
+
 			//get rain intensity in last SAVE_PERIOD
 			weather.rain = (data.rain - rain_prev)*3600.0/save_period;
 
@@ -216,7 +219,7 @@ int main(int argc, char **argv)
 	if (daemon)
 		daemonize(conf->pid_file, conf->log_file);
 
-	loop(serial_fd, conf->save_period);
+	loop(serial_fd, conf->save_period, conf->elevation);
 
 	return 0;
 }
