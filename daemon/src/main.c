@@ -110,7 +110,7 @@ static void loop(int fd, int save_period, int elevation)
 		data = station_read(fd);
 
 		if (data.wind_speed > weather.wind_gusts) {
-			weather.wind_dir = data.wind_dir;
+			weather.wind_gusts_dir = data.wind_dir;
 			weather.wind_gusts = data.wind_speed;
 		}
 		//average data
