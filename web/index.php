@@ -21,18 +21,25 @@ require_once "lang.php";
 require_once "db.php";
 Db::init(Config::get("db", "type"));
 
-function get_link($path, $lang=false)
+function get_link($path, $lang=false, $params=array())
 {
+	$link = "?";
+
 	if (Lang::getLang() != Config::get("general","default_lang") && !$lang)
 		$lang = Lang::getLang();
-	$lang_param = $lang ? "?lang=".$lang : "";
+	if ($lang && Config::get("general", "default_lang") != $lang)
+		$params['lang'] = $lang;
 
-	if ($path == false || $path == "index")
-		return "./".$lang_param;
+	if ($path != false && $path != "index")
+		$params['page'] = $path;
 
-	if (strlen($lang_param))
-		return "./".$lang_param."&amp;page=".$path;
-	return "./?page=".$path;
+	if (count($params) == 0)
+		return "./";
+
+	foreach ($params as $name => $value)
+		$link .= "$name=$value&amp;";
+
+	return substr($link, 0, -5);
 }
 
 //set timezone
