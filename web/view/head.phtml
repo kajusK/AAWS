@@ -20,6 +20,9 @@ defined("IN_APP") or die("Unauthorized access");
 
 	<link rel="stylesheet" type="text/css" href="themes/<?= Config::get("general", "theme") ?>/theme.css" />
 	<link rel="shortcut icon" type="image/x-icon" href="themes/<?= Config::get("general", "theme") ?>/favicon.ico"/>
+	<?php if (isset($js_libs)): foreach ($js_libs as $lib): ?>
+		<script type="text/javascript" src="js/<?= $lib ?>"></script>
+	<?php endforeach; endif; ?>
 </head>
 <body>
 <div id="wrapper">
