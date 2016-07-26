@@ -45,4 +45,9 @@ $translation = array(
 'Webcam' => "Webkamera",
 'Records' => "Rekordy",
 'About station' => "O stanici",
+'Enable javascript' => "Pro zobrazení grafů je nutné povolit javascript",
+'Month' => "Měsíc",
+'Year' => "Rok",
+'Week' => "Týden",
+'Date' => "Datum",
 );

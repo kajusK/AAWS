@@ -105,6 +105,15 @@ Class Db
 		return date("j.n.Y H:i", $time);
 	}
 
+	public static function getAllSince($since, $step) {
+		$q = "SELECT * FROM 'weather' WHERE timestamp >= ? ";
+		$q .= "ORDER BY timestamp";
+		//TODO: get only every step item
+
+		$res = self::_query($q, array($since), false);
+		return $res;
+	}
+
 	private static function _query($statement, $params, $single=true) {
 		$stmt = self::$pdo->prepare($statement);
 		$stmt->execute($params);

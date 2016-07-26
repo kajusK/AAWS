@@ -21,7 +21,7 @@ defined("IN_APP") or die("Unauthorized access");
 <img alt="Webkamera" src="./ook.jpg"/>
 </div>
 
-
+<div id="weather_data">
 <h2><?= Lang::get("Station location") ?></h2>
 <table>
 	<tr><td><?= Lang::get("Latitude") ?></td><td><?= Config::get("station", "latitude") ?></td></tr>
@@ -38,7 +38,13 @@ defined("IN_APP") or die("Unauthorized access");
 	<tr><td><?= Lang::get("Min in 24h") ?></td><td><?= $temp_min ?>&deg;C</td></tr>
 	<tr><td><?= Lang::get("Average in 24h") ?></td><td><?= $temp_avg ?>&deg;C</td></tr>
 </table>
-<img alt="graf teploty" src="./ook.jpg"/>
+<div class="graph">
+<div id="graph_temp"><?= Lang::get("Enable javascript") ?></div>
+
+<a href="<?= get_link("index") ?>"><?= Lang::get("Week") ?></a>
+<a href="<?= get_link("index", false, array('range'=>'month')) ?>"><?= Lang::get("Month") ?></a>
+<a href="<?= get_link("index", false, array('range'=>'year')) ?>"><?= Lang::get("Year") ?></a>
+</div>
 
 <h2><?= Lang::get("Wind") ?></h2>
 <table>
@@ -46,7 +52,13 @@ defined("IN_APP") or die("Unauthorized access");
 	<tr><td><?= Lang::get("Direction") ?></td><td><?= $wind_dir ?> &deg;</td></tr>
 	<tr><td><?= Lang::get("Gusts") ?></td><td><?= $wind_gusts ?> m/s</td></tr>
 </table>
-<img alt="graf větru" src="./ook.jpg"/>
+<div class="graph">
+<div id="graph_wind"><?= Lang::get("Enable javascript") ?></div>
+
+<a href="<?= get_link("index") ?>"><?= Lang::get("Week") ?></a>
+<a href="<?= get_link("index", false, array('range'=>'month')) ?>"><?= Lang::get("Month") ?></a>
+<a href="<?= get_link("index", false, array('range'=>'year')) ?>"><?= Lang::get("Year") ?></a>
+</div>
 
 <h2><?= Lang::get("Rain falls") ?></h2>
 <table>
@@ -57,18 +69,106 @@ defined("IN_APP") or die("Unauthorized access");
 	<tr><td><?= Lang::get("This year") ?></td><td><?= $rain_year ?> mm</td></tr>
 	<tr><td><?= Lang::get("Latest rainfalls") ?></td><td><?= $rain_date ?></td></tr>
 </table>
-<img alt="graf srážek" src="./ook.jpg"/>
+<div class="graph">
+<div id="graph_rain"><?= Lang::get("Enable javascript") ?></div>
+
+<a href="<?= get_link("index") ?>"><?= Lang::get("Week") ?></a>
+<a href="<?= get_link("index", false, array('range'=>'month')) ?>"><?= Lang::get("Month") ?></a>
+<a href="<?= get_link("index", false, array('range'=>'year')) ?>"><?= Lang::get("Year") ?></a>
+</div>
 
 <h2><?= Lang::get("Pressure") ?></h2>
 <table>
 	<tr><td><?= Lang::get("Relative pressure") ?></td><td><?= $pres ?> hPa</td></tr>
 	<tr><td><?= Lang::get("Tendency") ?></td><td><?= $pres_tendency ?> hPa/hod.</td></tr>
 </table>
-<img alt="graf tlaku" src="./ook.jpg"/>
+<div class="graph">
+<div id="graph_pres"><?= Lang::get("Enable javascript") ?></div>
+
+<a href="<?= get_link("index") ?>"><?= Lang::get("Week") ?></a>
+<a href="<?= get_link("index", false, array('range'=>'month')) ?>"><?= Lang::get("Month") ?></a>
+<a href="<?= get_link("index", false, array('range'=>'year')) ?>"><?= Lang::get("Year") ?></a>
+</div>
 
 <h2><?= Lang::get("Humidity") ?></h2>
 <table>
 	<tr><td><?= Lang::get("Current") ?></td><td><?= $humidity ?> %RH</td></tr>
 	<tr><td><?= Lang::get("Tendency") ?></td><td><?= $humidity_tendency ?> %RH</td></tr>
 </table>
-<img alt="graf vlhkosti" src="./ook.jpg"/>
+<div class="graph">
+<div id="graph_humidity"><?= Lang::get("Enable javascript") ?></div>
+
+<a href="<?= get_link("index") ?>"><?= Lang::get("Week") ?></a>
+<a href="<?= get_link("index", false, array('range'=>'month')) ?>"><?= Lang::get("Month") ?></a>
+<a href="<?= get_link("index", false, array('range'=>'year')) ?>"><?= Lang::get("Year") ?></a>
+</div>
+</div>
+
+
+<script type="text/javascript">
+window.onload = function show_graphs() {
+	temp = new Dygraph(
+		document.getElementById("graph_temp"),
+		"<?= Lang::get("Date").",".Lang::get("Temperature") ?>\n"+
+		"<?php foreach ($graph as $item): ?><?= $item['timestamp'].",".$item['temp'] ?>\n<?php endforeach; ?>",
+		{
+			rollPeriod: 10,
+			ylabel: "<?= Lang::get("Temperature") ?> °C",
+		}
+	);
+
+	wind = new Dygraph(
+		document.getElementById("graph_wind"),
+		"<?= Lang::get("Date").",".Lang::get("Wind speed").",".Lang::get("Wind direction") ?>\n"+
+		"<?php foreach ($graph as $item): ?><?= $item['timestamp'].",".$item['wind_speed'].",".$item['wind_direction'] ?>\n<?php endforeach; ?>",
+		{
+			rollPeriod: 5,
+			ylabel: "<?= Lang::get("Wind speed") ?> m/s",
+			y2label: "<?= Lang::get("Wind direction") ?> °",
+			legend: "always",
+			series: {
+				'<?= Lang::get("Wind direction") ?>': {
+					axis: 'y2',
+				}
+			},
+			axes: {
+				'y2': {
+					valueRange: [0,360],
+				}
+			}
+		}
+	);
+
+	rain = new Dygraph(
+		document.getElementById("graph_rain"),
+		"<?= Lang::get("Date") ?>,<?= Lang::get("Intensity") ?>\n" +
+		"2008-05-07,75\n" +
+		"2008-05-08,70\n" +
+		"2008-05-09,80\n",
+		{
+			rollPeriod: 7,
+			ylabel: "<?= Lang::get("Intensity") ?> mm/h",
+		}
+	);
+
+	pressure = new Dygraph(
+		document.getElementById("graph_pres"),
+		"<?= Lang::get("Date").",".Lang::get("Pressure") ?>\n"+
+		"<?php foreach ($graph as $item): ?><?= $item['timestamp'].",".$item['pressure'] ?>\n<?php endforeach; ?>",
+		{
+			rollPeriod: 50,
+			ylabel: "<?= Lang::get("Pressure") ?> hPa",
+		}
+	);
+
+	pressure = new Dygraph(
+		document.getElementById("graph_humidity"),
+		"<?= Lang::get("Date").",".Lang::get("Humidity") ?>\n"+
+		"<?php foreach ($graph as $item): ?><?= $item['timestamp'].",".$item['humidity'] ?>\n<?php endforeach; ?>",
+		{
+			rollPeriod: 7,
+			ylabel: "<?= Lang::get("Humidity") ?> %RH",
+		}
+	);
+}
+</script>

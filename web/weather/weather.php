@@ -32,6 +32,23 @@ class Weather {
 		return $data;
 	}
 
+	public static function getWeek()
+	{
+		return Db::getAllSince(time()-604800, 1);
+	}
+
+	public static function getMonth()
+	{
+		return Db::getAllSince(time()-2678400, 4);
+
+	}
+
+	public static function getYear()
+	{
+		return Db::getAllSince(time()-31556926, 72);
+
+	}
+
 	public static function records() {
 
 	}

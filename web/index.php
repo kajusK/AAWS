@@ -60,11 +60,30 @@ require_once "weather/weather.php";
 switch($page) {
 case "index":
 	$data = Weather::generate();
+	$js_libs = array("dygraph-combined.js");
 	break;
 
 case "records":
 	$data = Weather::records();
 	break;
+}
+
+if ($page == "index") {
+	if (!isset($_GET['range'])) {
+		$data['graph'] = Weather::getWeek();
+	} else {
+		switch($_GET['range']) {
+		case "month":
+			$data['graph'] = Weather::getMonth();
+			break;
+		case "year":
+			$data['graph'] = Weather::getYear();
+			break;
+		default:
+			Err::statusCode(404);
+			$page = "404";
+		}
+	}
 }
 
 if (isset($data))

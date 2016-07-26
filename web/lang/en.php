@@ -45,4 +45,9 @@ $translation = array(
 'Webcam' => "Webcam",
 'Records' => "Records",
 'About station' => "About station",
+'Enable javascript' => "You have to enable javascript to display graphs",
+'Month' => "Month",
+'Year' => "Year",
+'Week' => "Week",
+'Date' => "Date",
 );
