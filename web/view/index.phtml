@@ -107,68 +107,16 @@ defined("IN_APP") or die("Unauthorized access");
 
 <script type="text/javascript">
 window.onload = function show_graphs() {
-	temp = new Dygraph(
-		document.getElementById("graph_temp"),
-		"<?= Lang::get("Date").",".Lang::get("Temperature") ?>\n"+
-		"<?php foreach ($graph as $item): ?><?= $item['timestamp'].",".$item['temp'] ?>\n<?php endforeach; ?>",
-		{
-			rollPeriod: 10,
-			ylabel: "<?= Lang::get("Temperature") ?> °C",
-		}
-	);
+	temp_data = [<?php foreach ($graph as $item) { echo "[new Date(".$item['timestamp']."*1000),".$item['temp']."]," ;} ?>];
+	humidity_data = [<?php foreach ($graph as $item) { echo "[new Date(".$item['timestamp']."*1000),".$item['humidity']."]," ;} ?>];
+	pressure_data = [<?php foreach ($graph as $item) { echo "[new Date(".$item['timestamp']."*1000),".$item['pressure']."]," ;} ?>];
+	wind_data = [<?php foreach ($graph as $item) { echo "[new Date(".$item['timestamp']."*1000),".$item['wind_speed'].",".$item['wind_direction']."]," ;} ?>];
 
-	wind = new Dygraph(
-		document.getElementById("graph_wind"),
-		"<?= Lang::get("Date").",".Lang::get("Wind speed").",".Lang::get("Wind direction") ?>\n"+
-		"<?php foreach ($graph as $item): ?><?= $item['timestamp'].",".$item['wind_speed'].",".$item['wind_direction'] ?>\n<?php endforeach; ?>",
-		{
-			rollPeriod: 5,
-			ylabel: "<?= Lang::get("Wind speed") ?> m/s",
-			y2label: "<?= Lang::get("Wind direction") ?> °",
-			legend: "always",
-			series: {
-				'<?= Lang::get("Wind direction") ?>': {
-					axis: 'y2',
-				}
-			},
-			axes: {
-				'y2': {
-					valueRange: [0,360],
-				}
-			}
-		}
-	);
-
-	rain = new Dygraph(
-		document.getElementById("graph_rain"),
-		"<?= Lang::get("Date") ?>,<?= Lang::get("Intensity") ?>\n" +
-		"2008-05-07,75\n" +
-		"2008-05-08,70\n" +
-		"2008-05-09,80\n",
-		{
-			rollPeriod: 7,
-			ylabel: "<?= Lang::get("Intensity") ?> mm/h",
-		}
-	);
-
-	pressure = new Dygraph(
-		document.getElementById("graph_pres"),
-		"<?= Lang::get("Date").",".Lang::get("Pressure") ?>\n"+
-		"<?php foreach ($graph as $item): ?><?= $item['timestamp'].",".$item['pressure'] ?>\n<?php endforeach; ?>",
-		{
-			rollPeriod: 50,
-			ylabel: "<?= Lang::get("Pressure") ?> hPa",
-		}
-	);
-
-	pressure = new Dygraph(
-		document.getElementById("graph_humidity"),
-		"<?= Lang::get("Date").",".Lang::get("Humidity") ?>\n"+
-		"<?php foreach ($graph as $item): ?><?= $item['timestamp'].",".$item['humidity'] ?>\n<?php endforeach; ?>",
-		{
-			rollPeriod: 7,
-			ylabel: "<?= Lang::get("Humidity") ?> %RH",
-		}
-	);
+	temp = add_graph("graph_temp", temp_data, "<?= Lang::get("Temperature") ?>", "°C");
+	humidity = add_graph("graph_humidity", humidity_data, "<?= Lang::get("Humidity") ?>", "%RH");
+	pressure = add_graph("graph_pres", pressure_data, "<?= Lang::get("Pressure") ?>", "hPa");
+	wind = add_wind_graph("graph_wind", wind_data,
+		["<?= Lang::get("Wind speed") ?>","<?= Lang::get("Wind direction") ?>"],
+		["m/s", "°"]);
 }
 </script>

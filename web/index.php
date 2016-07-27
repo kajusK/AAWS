@@ -60,7 +60,7 @@ require_once "weather/weather.php";
 switch($page) {
 case "index":
 	$data = Weather::generate();
-	$js_libs = array("dygraph-combined.js");
+	$js_libs = array("dygraph-combined.js", "graphs.js");
 	break;
 
 case "records":
