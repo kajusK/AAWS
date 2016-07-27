@@ -1,1 +1,13 @@
-ook
+<?php
+/**
+ * Weather station UI
+ *
+ * @copyright 2016 Jakub Kaderka
+ * @license GNU General Public License, version 2; see LICENSE.txt
+ */
+defined("IN_APP") or die("Unauthorized access");
+?>
+
+<div id="webcam">
+	<img alt="<?= Lang::get("Webcam") ?>" src="<?= Config::get("files", "webcam") ?>"/>
+</div>

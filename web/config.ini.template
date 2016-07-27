@@ -25,3 +25,6 @@ filename = "./weather.db"
 #name = "weather"
 #host = "127.0.0.1"
 #port = "3306"
+
+[files]
+webcam = "webcam/latest.jpg"

@@ -18,7 +18,7 @@ defined("IN_APP") or die("Unauthorized access");
 	<tr><td><?= Lang::get("Humidity") ?></td><td><?= $humidity ?> %RH</td></tr>
 	<tr><td><?= Lang::get("Rain falls") ?></td><td><?= $rain ?> mm/hod</td></tr>
 </table>
-<img alt="Webkamera" src="./ook.jpg"/>
+<img alt="<?= Lang::get("Webcam") ?>" src="<?= Config::get("files", "webcam") ?>"/>
 </div>
 
 <div id="weather_data">

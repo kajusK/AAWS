@@ -49,5 +49,5 @@ $translation = array(
 'Month' => "Měsíc",
 'Year' => "Rok",
 'Week' => "Týden",
-'Date' => "Datum",
+'Webcam' => "Webkamera",
 );
