@@ -32,6 +32,23 @@ class Weather {
 		return $data;
 	}
 
+	public static function records() {
+		$data = array(
+			'temp_max' => Temp::getMax(),
+			'temp_min' => Temp::getMin(),
+			'humidity_max' => Humidity::getMax(),
+			'humidity_min' => Humidity::getMin(),
+			'pressure_max' => Press::getMax(),
+			'pressure_min' => Press::getMin(),
+			'wind_speed_max' => Wind::getMaxSpeed(),
+			'wind_gusts_max' => Wind::getMaxGusts(),
+			'rain_intensity_max' => Rain::getMaxIntensity(),
+			'rain_hour_max' => Rain::getMaxHour());
+
+		return $data;
+	}
+
+
 	public static function getWeek()
 	{
 		return Db::getAllSince(time()-604800, 1);
@@ -48,9 +65,4 @@ class Weather {
 		return Db::getAllSince(time()-31556926, 72);
 
 	}
-
-	public static function records() {
-
-	}
-
 }

@@ -50,4 +50,8 @@ $translation = array(
 'Year' => "Rok",
 'Week' => "Týden",
 'Webcam' => "Webkamera",
+'Record values' => "Rekordní hodnoty",
+'Maximum' => "Maximum",
+'Minimum' => "Minimum",
+'Hour maximum' => "Nejvyšší hodinový úhrn srážek",
 );

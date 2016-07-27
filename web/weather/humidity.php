@@ -16,5 +16,13 @@ class Humidity
 	public static function getTendency() {
 		return Db::tendency("humidity");
 	}
+
+	public static function getMax() {
+		return Db::getMax("humidity", 0);
+	}
+
+	public static function getMin() {
+		return Db::getMin("humidity", 0);
+	}
 }
 

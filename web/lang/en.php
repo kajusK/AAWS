@@ -50,4 +50,8 @@ $translation = array(
 'Year' => "Year",
 'Week' => "Week",
 'Webcam' => "Webcam",
+'Record values' => "Record values",
+'Maximum' => "Maximum",
+'Minimum' => "Minimum",
+'Hour maximum' => "Maximum sum of rain in an hour",
 );

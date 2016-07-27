@@ -27,15 +27,23 @@ class Temp
 	}
 
 	public static function max24h() {
-		return Db::getMax("temp", time() - 86400);
+		return Db::getMax("temp", time() - 86400)[0];
 	}
 
 	public static function min24h() {
-		return Db::getMin("temp", time() - 86400);
+		return Db::getMin("temp", time() - 86400)[0];
 	}
 
 	public static function avg24h() {
 		return round(Db::getAvg("temp", time() - 86400), 1);
+	}
+
+	public static function getMax() {
+		return Db::getMax("temp", 0);
+	}
+
+	public static function getMin() {
+		return Db::getMin("temp", 0);
 	}
 }
 

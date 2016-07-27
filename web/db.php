@@ -80,15 +80,19 @@ Class Db
 	}
 
 	public static function getMax($field, $since, $table="weather") {
-		$q = "SELECT max($field) FROM '$table' WHERE timestamp >= ?";
+		$q = "SELECT max($field) as max,timestamp FROM '$table' ";
+		$q .= "WHERE timestamp >= ?";
 		$res = self::_query($q, array($since));
-		return reset($res);
+		$date = date("j.n.y h:i", $res['timestamp']);
+		return array($res['max'], $date);
 	}
 
 	public static function getMin($field, $since, $table="weather") {
-		$q = "SELECT min($field) FROM '$table' WHERE timestamp >= ?";
+		$q = "SELECT min($field) as min, timestamp FROM '$table' ";
+		$q .= "WHERE timestamp >= ?";
 		$res = self::_query($q, array($since));
-		return reset($res);
+		$date = date("j.n.y h:i", $res['timestamp']);
+		return array($res['min'], $date);
 	}
 
 	public static function getAvg($field, $since, $table="weather") {

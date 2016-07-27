@@ -32,5 +32,13 @@ class Rain
 	public static function getLatestDate() {
 		return Db::getLatestDate();
 	}
+
+	public static function getMaxIntensity() {
+		return Db::getMax("rain", 0);
+	}
+
+	public static function getMaxHour() {
+		return Db::getMax("rain", 0, "rain");
+	}
 }
 

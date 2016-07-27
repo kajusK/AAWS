@@ -18,5 +18,13 @@ class Press
 	public static function getTendency() {
 		return Db::tendency("pressure");
 	}
+
+	public static function getMax() {
+		return Db::getMax("pressure", 0);
+	}
+
+	public static function getMin() {
+		return Db::getMin("pressure", 0);
+	}
 }
 

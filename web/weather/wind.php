@@ -22,4 +22,12 @@ class Wind
 	public static function getGusts() {
 		return Db::latest("wind_gusts");
 	}
+
+	public static function getMaxSpeed() {
+		return Db::getMax("wind_speed", 0);
+	}
+
+	public static function getMaxGusts() {
+		return Db::getMax("wind_gusts", 0);
+	}
 }

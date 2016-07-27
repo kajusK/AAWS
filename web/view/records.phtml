@@ -1,1 +1,84 @@
-sss
+<?php
+/**
+ * Weather station UI
+ *
+ * @copyright 2016 Jakub Kaderka
+ * @license GNU General Public License, version 2; see LICENSE.txt
+ */
+defined("IN_APP") or die("Unauthorized access");
+?>
+
+<div id="records">
+<h2><?= Lang::get("Record values") ?></h2>
+
+<h3><?= Lang::get("Temperature") ?></h3>
+<table>
+	<tr>
+		<td><?= Lang::get("Maximum") ?></td>
+		<td><?= $temp_max[0] ?></td>
+		<td><?= $temp_max[1] ?></td>
+	</tr>
+	<tr>
+		<td><?= Lang::get("Minimum") ?></td>
+		<td><?= $temp_min[0] ?></td>
+		<td><?= $temp_min[1] ?></td>
+	</tr>
+</table>
+
+<h3><?= Lang::get("Wind") ?></h3>
+<table>
+	<tr>
+		<td><?= Lang::get("Maximum") ?></td>
+		<td><?= $wind_speed_max[0] ?></td>
+		<td><?= $wind_speed_max[1] ?></td>
+	</tr>
+	<tr>
+		<td><?= Lang::get("Gusts") ?></td>
+		<td><?= $wind_gusts_max[0] ?></td>
+		<td><?= $wind_gusts_max[1] ?></td>
+	</tr>
+</table>
+
+<h3><?= Lang::get("Rain falls") ?></h3>
+<table>
+	<tr>
+		<td><?= Lang::get("Intensity") ?></td>
+		<td><?= $rain_intensity_max[0] ?></td>
+		<td><?= $rain_intensity_max[1] ?></td>
+	</tr>
+	<tr>
+		<td><?= Lang::get("Hour maximum") ?></td>
+		<td><?= $rain_hour_max[0] ?></td>
+		<td><?= $rain_hour_max[1] ?></td>
+	</tr>
+</table>
+
+<h3><?= Lang::get("Relative pressure") ?></h3>
+<table>
+	<tr>
+		<td><?= Lang::get("Maximum") ?></td>
+		<td><?= $pressure_max[0] ?></td>
+		<td><?= $pressure_max[1] ?></td>
+	</tr>
+	<tr>
+		<td><?= Lang::get("Minimum") ?></td>
+		<td><?= $pressure_min[0] ?></td>
+		<td><?= $pressure_min[1] ?></td>
+	</tr>
+</table>
+
+<h3><?= Lang::get("Humidity") ?></h3>
+<table>
+	<tr>
+		<td><?= Lang::get("Maximum") ?></td>
+		<td><?= $humidity_max[0] ?></td>
+		<td><?= $humidity_max[1] ?></td>
+	</tr>
+	<tr>
+		<td><?= Lang::get("Minimum") ?></td>
+		<td><?= $humidity_min[0] ?></td>
+		<td><?= $humidity_min[1] ?></td>
+	</tr>
+</table>
+
+</div>
