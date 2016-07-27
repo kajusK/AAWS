@@ -14,7 +14,7 @@
 #include <string.h>
 
 #include "utils/weather.h"
-#include "serial.h"
+#include "utils/serial.h"
 #include "station.h"
 #include "db.h"
 #include "config.h"
