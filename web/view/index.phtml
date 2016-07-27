@@ -110,11 +110,13 @@ window.onload = function show_graphs() {
 	temp_data = [<?php foreach ($graph as $item) { echo "[new Date(".$item['timestamp']."*1000),".$item['temp']."]," ;} ?>];
 	humidity_data = [<?php foreach ($graph as $item) { echo "[new Date(".$item['timestamp']."*1000),".$item['humidity']."]," ;} ?>];
 	pressure_data = [<?php foreach ($graph as $item) { echo "[new Date(".$item['timestamp']."*1000),".$item['pressure']."]," ;} ?>];
+	rain_data = [<?php foreach ($graph as $item) { echo "[new Date(".$item['timestamp']."*1000),".$item['rain']."]," ;} ?>];
 	wind_data = [<?php foreach ($graph as $item) { echo "[new Date(".$item['timestamp']."*1000),".$item['wind_speed'].",".$item['wind_direction']."]," ;} ?>];
 
 	temp = add_graph("graph_temp", temp_data, "<?= Lang::get("Temperature") ?>", "°C");
 	humidity = add_graph("graph_humidity", humidity_data, "<?= Lang::get("Humidity") ?>", "%RH");
 	pressure = add_graph("graph_pres", pressure_data, "<?= Lang::get("Pressure") ?>", "hPa");
+	rain = add_graph("graph_rain", rain_data, "<?= Lang::get("Intensity") ?>", "mm/h");
 	wind = add_wind_graph("graph_wind", wind_data,
 		["<?= Lang::get("Wind speed") ?>","<?= Lang::get("Wind direction") ?>"],
 		["m/s", "°"]);
