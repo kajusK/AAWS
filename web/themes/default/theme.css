@@ -1,0 +1,80 @@
+/*
+ * Default AAWS theme
+ *
+ * Licensed under GNU/GPL2, see LICENSE.txt
+ *
+ * Jakub Kaderka 2016
+ */
+body {
+	font-family: Georgia,'New York CE',utopia,serif;
+	font-size: 11pt;
+	line-height: 120%;
+	color: #000000;
+	text-align: justify;
+
+	background-color: #CCCCCC;
+	margin: 0px;
+}
+
+#wrapper {
+	position: relative;
+	display: block;
+	min-width: 400px;
+	margin-left: 5%;
+	margin-right: 5%;
+	border: 1px solid gray;
+}
+
+#content {
+	padding: 5px;
+}
+
+#footer {
+	border-top: 1px solid gray;
+	text-align: center;
+}
+
+/* ***************************************
+ * Menu
+ * ***************************************/
+#menu {
+	border: 1px solid gray;
+	background-color: gainsboro;
+	padding: 2px;
+}
+
+#menu a {
+	text-decoration: none;
+	border-left: 1px solid transparent;
+	border-right: 1px solid transparent;
+	padding: 0 2px 0 2px;
+	color: #2E2E2E;
+}
+
+#menu a:hover {
+	color: blue;
+	border-left: 1px solid gray;
+	border-right: 1px solid gray;
+}
+
+#menu_left {
+	display: inline;
+}
+
+#menu_right {
+	display: inline;
+	position: absolute;
+	right: 2px;
+}
+
+/* ***************************************
+ * Current weather
+ * ***************************************/
+
+/* ***************************************
+ * Extremes
+ * ***************************************/
+
+/* ***************************************
+ * Webcam
+ * ***************************************/
