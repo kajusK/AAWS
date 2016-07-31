@@ -77,8 +77,10 @@ int backends_add_rain(float rain)
 	int i = 0;
 	int ret = 0;
 
-	while (backends[i].backend != NULL)
-		ret |= backends[i++].add_rain(rain);
+	while (backends[i].backend != NULL) {
+		if (backends[i].add_rain != NULL)
+			ret |= backends[i++].add_rain(rain);
+	}
 
 	return ret;
 }
