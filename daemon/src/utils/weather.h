@@ -10,6 +10,7 @@
 
 struct s_weather {
 	float temp;		/* outdoor temp, degrees C */
+	float dew_point;	/* degrees C */
 	float humidity;		/* in %RH */
 	float pressure;		/* hPa, relative pressure */
 

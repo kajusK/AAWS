@@ -2,21 +2,60 @@
 # AAWS Automated Amateur Weather station configuration
 #
 
-#station elevation - necessary for relative pressure calculation
-elevation = 123
-
+[general]
 #Serial port used by electronics
 serial = /dev/ttyAMA0
 baudrate = 9600
 
-#sqlite database filename to store data to
-#database = /var/lib/aaws/weather.db
-
 #save data to DB every save_period seconds
-#values between 120 and 900 are reasonable, shorter might produce incorrect
-#wind gusts reading
+#values between 120 and 900 are reasonable, all values (except the wind gusts)
+#are averaged during this period
 #save_period = 300
 
 #housekeeping stuff
 #log_file = /var/log/aaws.log
 #pid_file = /var/run/aaws_daemon.pid
+
+[station]
+#Station name to be shown
+name = "Horní Dolní"
+
+#position, used by openweathermap, live output,...
+latitude = "50° 10' 11.1234'' N"
+longitude = "14° 11' 12.13'' E"
+
+#station elevation in meters - necessary for relative pressure calculation
+#this value must be correct, else the pressure measurements will be incorrect
+elevation = 123
+
+#################################
+# Data backends                 #
+#################################
+#database output, one must be enabled to use the web interface
+[sqlite]
+enabled = yes
+#filename = /var/lib/aaws/weather.db
+
+[mysql]
+enabled = no
+username = foo
+password = bar
+host = localhost
+database = aaws
+
+#output current values to file
+[live]
+enabled = no
+#filename = /var/lib/aaws/live.txt
+
+#http://wunderground.com/
+[wunderground]
+enabled = no
+id = foo
+password = bar
+
+#http://openweathermap.org/
+[openweathermap]
+enabled = no
+username = foo
+password = bar

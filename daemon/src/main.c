@@ -16,8 +16,8 @@
 #include "utils/weather.h"
 #include "utils/serial.h"
 #include "station.h"
-#include "db.h"
 #include "config.h"
+#include "backends/backends.h"
 
 #define AAWS_VERSION "0.1"
 #define CONF_DEFAULT "/etc/aaws/config"
@@ -30,7 +30,6 @@ static void sig_handler(int signum)
 {
 	fprintf(stderr, "SIGINT received, exiting...\n");
 	serial_close(serial_fd);
-	db_close();
 
 	exit(0);
 }
@@ -96,13 +95,14 @@ static void usage(const char *name)
 		"  -f\t\t\tRun in foreground\n", name);
 }
 
-static void loop(int fd, int save_period, int elevation)
+static void loop(int fd, struct s_config *conf)
 {
 	int cycles = 0;
 	int hour_counter = 0;
 	struct s_message data;
 	struct s_weather weather;
 	float rain_prev = 0;
+	float rain_1h = 0;
 
 	memset(&weather, 0, sizeof(weather));
 
@@ -125,7 +125,7 @@ static void loop(int fd, int save_period, int elevation)
 		hour_counter++;
 
 		//save period elapsed
-		if (cycles >= save_period/SAMPLE_PERIOD) {
+		if (cycles >= conf->save_period/SAMPLE_PERIOD) {
 			cycles = 0;
 
 			//get average
@@ -135,12 +135,14 @@ static void loop(int fd, int save_period, int elevation)
 			weather.temp = weather.temp / cycles;
 
 			weather.pressure = weather.pressure / cycles;
-			weather.pressure = press_relative(weather.pressure, elevation);
+			weather.pressure = press_relative(weather.pressure, conf->station.elevation);
+			weather.dew_point = dew_point(weather.humidity, weather.temp);
+			weather.rain_1h = rain_1h;
 
 			//get rain intensity in last SAVE_PERIOD
-			weather.rain = (data.rain - rain_prev)*3600.0/save_period;
+			weather.rain = (data.rain - rain_prev)*3600.0/conf->save_period;
 
-			db_add_weather(&weather);
+			backends_send(&weather, conf);
 
 			//clear stuff
 			memset(&weather, 0, sizeof(weather));
@@ -150,7 +152,8 @@ static void loop(int fd, int save_period, int elevation)
 		//one hour elapsed
 		if (hour_counter >= 3600/SAMPLE_PERIOD){
 			hour_counter = 0;
-			db_add_rain(data.rain);
+			rain_1h = data.rain;
+			backends_add_rain(data.rain);
 
 			station_rain_reset(fd);
 			rain_prev = 0;
@@ -203,7 +206,7 @@ int main(int argc, char **argv)
 
 	conf = conf_get();
 
-	if (db_init(conf->db_file) != 0)
+	if (backends_init(conf) != 0)
 		exit(-1);
 	if ((serial_fd = serial_open(conf->serial, conf->baudr)) < 0)
 		exit(-1);
@@ -219,7 +222,7 @@ int main(int argc, char **argv)
 	if (daemon)
 		daemonize(conf->pid_file, conf->log_file);
 
-	loop(serial_fd, conf->save_period, conf->elevation);
+	loop(serial_fd, conf);
 
 	return 0;
 }

@@ -6,16 +6,17 @@
  * Jakub Kaderka 2016
  */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <sqlite3.h>
 
 #include "utils/weather.h"
-#include "db.h"
+#include "backends/backends.h"
 
 static sqlite3 *db;
 
-static int db_create()
+static int sqlite_create()
 {
 	char *err = 0;
 	int res;
@@ -28,7 +29,8 @@ static int db_create()
 			"pressure REAL,"
 			"wind_speed REAL,"
 			"wind_gusts REAL,"
-			"wind_direction INTEGER );"
+			"wind_gusts_dir INTEGER,"
+			"wind_direction INTEGER);"
 			"CREATE TABLE 'rain' ( "
 			"timestamp INTEGER,"
 			"rain REAL);"
@@ -43,7 +45,12 @@ static int db_create()
 	return 0;
 }
 
-int db_init(char *filename)
+void sqlite_close()
+{
+	sqlite3_close(db);
+}
+
+int sqlite_init(char *filename)
 {
 	int create = 0;
 	if (access(filename, F_OK) == -1) {
@@ -57,40 +64,40 @@ int db_init(char *filename)
 		return -1;
 	}
 
-	if (create && db_create() != 0) {
-		db_close();
+	if (create && sqlite_create() != 0) {
+		sqlite_close();
 		return -1;
 	}
 
+	atexit(sqlite_close);
 	return 0;
 }
 
-void db_close()
-{
-	sqlite3_close(db);
-}
 
-int db_add_weather(struct s_weather *data)
+int backend_sqlite(struct s_weather *weather, struct s_station *station,
+			  void *additional)
 {
 	int res = 0;
 	sqlite3_stmt *stmt;
 
 	res = sqlite3_prepare_v2(db, "INSERT INTO 'weather' (timestamp, temp,"
 			"humidity, rain, pressure, wind_speed, wind_gusts,"
-			"wind_direction) VALUES (strftime('%s','now'),?,?,?,?,?);",
+			"wind_direction, wind_gusts_dir) VALUES "
+		        "(strftime('%s','now'),?,?,?,?,?,?);",
 			-1, &stmt, NULL);
 	if (res != SQLITE_OK) {
 		fprintf(stderr, "Unable to do query: %s\n", sqlite3_errmsg(db));
 		return -1;
 	}
 
-	sqlite3_bind_double(stmt, 1, data->temp);
-	sqlite3_bind_double(stmt, 2, data->humidity);
-	sqlite3_bind_double(stmt, 3, data->rain);
-	sqlite3_bind_int(stmt, 4, data->pressure);
-	sqlite3_bind_double(stmt, 5, data->wind_speed);
-	sqlite3_bind_int(stmt, 6, data->wind_gusts);
-	sqlite3_bind_int(stmt, 7, data->wind_dir);
+	sqlite3_bind_double(stmt, 1, weather->temp);
+	sqlite3_bind_double(stmt, 2, weather->humidity);
+	sqlite3_bind_double(stmt, 3, weather->rain);
+	sqlite3_bind_int(stmt, 4, weather->pressure);
+	sqlite3_bind_double(stmt, 5, weather->wind_speed);
+	sqlite3_bind_int(stmt, 6, weather->wind_gusts);
+	sqlite3_bind_int(stmt, 7, weather->wind_dir);
+	sqlite3_bind_int(stmt, 8, weather->wind_gusts_dir);
 
 	if (sqlite3_step(stmt) != SQLITE_DONE) {
 		fprintf(stderr, "Unable to do query: %s\n", sqlite3_errmsg(db));
@@ -101,7 +108,7 @@ int db_add_weather(struct s_weather *data)
 	return 0;
 }
 
-int db_add_rain(float rain)
+int sqlite_add_rain(float rain)
 {
 	int res = 0;
 	sqlite3_stmt *stmt;
