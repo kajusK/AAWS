@@ -24,32 +24,32 @@ int backends_init(struct s_config *config)
 {
 	int i = 0;
 
-	if ((config->backends & SQLITE) && sqlite_init(config->sqlite_path) != 0)
+	if ((config->backends & B_SQLITE) && sqlite_init(config->sqlite_path) != 0)
 		return -1;
-	if ((config->backends & MYSQL) && mysql_init(&config->mysql))
+	if ((config->backends & B_MYSQL) && backend_mysql_init(&config->mysql))
 		return -1;
 
-	if (config->backends & SQLITE) {
+	if (config->backends & B_SQLITE) {
 		backends[i].data = NULL;
 		backends[i].add_rain = sqlite_add_rain;
 		backends[i++].backend = backend_sqlite;
 	}
-	if (config->backends & MYSQL) {
+	if (config->backends & B_MYSQL) {
 		backends[i].data = NULL;
 		backends[i].add_rain = mysql_add_rain;
 		backends[i++].backend = backend_mysql;
 	}
-	if (config->backends & LIVE) {
+	if (config->backends & B_LIVE) {
 		backends[i].data = (void *) config->live_path;
 		backends[i].add_rain = NULL;
 		backends[i++].backend = backend_live;
 	}
-	if (config->backends & WUNDERGROUND) {
+	if (config->backends & B_WUNDERGROUND) {
 		backends[i].data = (void *) &config->wunderground;
 		backends[i].add_rain = NULL;
 		backends[i++].backend = backend_wunderground;
 	}
-	if (config->backends & OWEATHERMAP) {
+	if (config->backends & B_OWEATHERMAP) {
 		backends[i].data = (void *) &config->oweathermap;
 		backends[i].add_rain = NULL;
 		backends[i++].backend = backend_openweathermap;

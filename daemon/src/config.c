@@ -141,15 +141,15 @@ int conf_read(char *filename)
 
 	/* set enabled backends */
 	if (b_live)
-		conf.backends |= LIVE;
+		conf.backends |= B_LIVE;
 	if (b_sqlite)
-		conf.backends |= SQLITE;
+		conf.backends |= B_SQLITE;
 	if (b_mysql)
-		conf.backends |= MYSQL;
+		conf.backends |= B_MYSQL;
 	if (b_wunder)
-		conf.backends |= WUNDERGROUND;
+		conf.backends |= B_WUNDERGROUND;
 	if (b_oweather)
-		conf.backends |= OWEATHERMAP;
+		conf.backends |= B_OWEATHERMAP;
 
 	return conf_validate(&conf);
 }

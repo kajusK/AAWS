@@ -10,8 +10,9 @@ SRCDIRS=src
 #compiler and linker config
 CC=gcc
 LD=gcc
-CFLAGS=-Wall -O2 -I $(SRCDIRS)
-LDFLAGS=-lsqlite3 -lm
+MYSQL_LIBS=$(shell mysql_config --libs)
+CFLAGS=-Wall -O2 -I $(SRCDIRS) -I /usr/include/mysql
+LDFLAGS=-lsqlite3 -lm $(MYSQL_LIBS)
 
 
 #resulting bin

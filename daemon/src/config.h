@@ -18,11 +18,11 @@
 #define DEFAULT_ELEVATION -1000
 
 enum e_backends {
-	SQLITE = 1 << 0,
-	MYSQL = 1 << 1,
-	LIVE = 1 << 2,
-	WUNDERGROUND = 1 << 3,
-	OWEATHERMAP = 1 << 4,
+	B_SQLITE = 1 << 0,
+	B_MYSQL = 1 << 1,
+	B_LIVE = 1 << 2,
+	B_WUNDERGROUND = 1 << 3,
+	B_OWEATHERMAP = 1 << 4,
 };
 
 /* Credentials for wunderground, openweathermap... */

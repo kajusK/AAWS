@@ -12,7 +12,7 @@
 #include "config.h"
 
 extern int sqlite_init(char *filename);
-extern int mysql_init(struct s_db *db);
+extern int backend_mysql_init(struct s_db *db);
 extern int sqlite_add_rain(float rain);
 extern int mysql_add_rain(float rain);
 
