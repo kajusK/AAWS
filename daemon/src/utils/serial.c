@@ -87,7 +87,7 @@ int serial_open(char *device, int baudrate)
 	int baudr;
 
 	baudr = get_baudr(baudrate);
-	if (baudr < 1)
+	if (baudr < 0)
 		return -1;
 
 	fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
@@ -107,7 +107,7 @@ int serial_open(char *device, int baudrate)
 	config.c_iflag = 0;
 	config.c_lflag = 0;
 	config.c_oflag = 0;
-	config.c_cc[VMIN] = 0;
+	config.c_cc[VMIN] = 1;
 	config.c_cc[VTIME] = 0;
 
 	cfsetispeed(&config, baudr);
@@ -172,9 +172,9 @@ int serial_read(int fd, void *buf, size_t count)
 	return read(fd, buf, count);
 }
 
-int serial_getc(int fd)
+char serial_getc(int fd)
 {
-	int c;
+	char c;
 	read(fd, &c, 1);
 
 	return c;
