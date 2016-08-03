@@ -5,6 +5,8 @@
  * air pressure 300 to 1100 (+-6) hPa
  * humidity 0-100 (+-2) %RH
  *
+ * Communication:
+ * ==============
  * Data format:
  * ------------
  * #T:23.5;H:32;P:1013.25;R:2.55;W:11.5;D:E;@
@@ -22,15 +24,22 @@
  *
  * Ack reply:
  * ----------
- * #A;@
+ * #A;@ - ACK
+ * #N;@ - NACK - unknown command, etc
+ *
+ * Firmware version
+ * ----------------
+ * #V:1.2;@
  *
  * Commands:
  * ---------
  * #R;@ - reset rain counter (e.g. every hour...), responds with ACK
  * #T;@ - test if station is alive, responds with ACK
+ * #V;@ - firmware version
+ *
+ * For license, see LICENSE.txt
  *
  * Jakub Kaderka 2016
- *
  *
  * TODO: Read commands from serial
  */
@@ -51,6 +60,8 @@
 #include "wind.h"
 #include "utils/uart.h"
 
+#define SEND_DELAY 5
+
 enum sensor_state {
 	E_INITBMP180 = 1 << 0,
 	E_BMP180 = 1 << 1,
@@ -60,15 +71,6 @@ enum sensor_state {
 ISR(BADISR_vect)
 {
 
-}
-
-void delay_s(uint8_t sec)
-{
-	uint8_t i;
-
-	for (i = 0; i < sec; i++) {
-		_delay_ms(1000);
-	}
 }
 
 static void print_decimal(char *buffer, uint8_t decimals)
@@ -91,7 +93,7 @@ static void print_decimal(char *buffer, uint8_t decimals)
 }
 
 /*
- * Print integer to stdour, insert dot to separated decimals
+ * Print integer to stdout, insert dot to separated decimals
  */
 static void print_num(int num, uint8_t decimals)
 {
@@ -107,13 +109,99 @@ static void print_32num(uint32_t num, uint8_t decimals)
 	print_decimal(buffer, decimals);
 }
 
-int main(int argc, char *argv[])
+static void check_rx(void)
+{
+	char command;
+
+	if (uart_check_rx() == 0 || getchar() != '#')
+		return;
+
+	//avoid deadlock when no more data arrived
+	if (uart_check_rx() == 0) {
+		_delay_ms(10);
+		if (uart_check_rx() == 0)
+			return;
+	}
+
+	command = getchar();
+	putchar('#');
+	switch (command) {
+	case 'R':
+		rain_reset();
+		putchar('A');
+		break;
+	case 'T':
+		rain_reset();
+		putchar('A');
+		break;
+	case 'V':
+		fputs("V:"VERSION, stdout);
+		break;
+	default:
+		putchar('N');
+	}
+	fputs(";@", stdout);
+
+	while (uart_check_rx() != 0 && getchar() != '@')
+		;
+}
+
+static enum sensor_state send_data(enum sensor_state state)
 {
 	int16_t temp_bmp;
 	int16_t temp;
 	uint32_t pres;
 	uint16_t hum;
+
+	state = state & E_INITBMP180;
+	if (state & E_INITBMP180 || bmp180_read(&temp_bmp, &pres) != 0)
+		state |= E_BMP180;
+	if (dht22_read(&temp, &hum) != 0)
+		state |= E_DHT22;
+
+	putchar('#');
+
+	fputs("P:", stdout);
+	if (state & E_BMP180)
+		putchar('E');
+	else
+		print_32num(pres, 2);
+
+	fputs(";T:", stdout);
+	if (state & E_DHT22) {
+		if (state & E_BMP180)
+			putchar('E');
+		else
+			print_num(temp_bmp, 1);
+
+		fputs(";H:E", stdout);
+	} else {
+		print_num(temp, 1);
+		fputs(";H:", stdout);
+		print_num(hum, 1);
+	}
+
+	fputs(";W:", stdout);
+	print_num(wind_speed(), 1);
+	fputs(";D:", stdout);
+	print_num(wind_dir(), 0);
+
+	fputs(";R:", stdout);
+	print_num(rain_get(), 1);
+
+	fputs(";@\n", stdout);
+
+	// if bmp180 failed, try to init again
+	if (state & E_INITBMP180 && bmp180_init() == 0)
+		state &= ~E_INITBMP180;
+
+	return state;
+}
+
+int main(int argc, char *argv[])
+{
 	enum sensor_state state = 0;
+	int i;
 
 	//TODO detect type of reset (watchdog....)
 	uart_init();
@@ -123,7 +211,7 @@ int main(int argc, char *argv[])
 	fputs("Kajus 2016\n\r", stdout);
 
 	if (bmp180_init() != 0) {
-		state |= E_INITBMP180 | E_BMP180;
+		state |= E_INITBMP180;
 		fputs("Unable to init bmp180", stderr);
 	}
 
@@ -135,49 +223,12 @@ int main(int argc, char *argv[])
 	//set_sleep_mode()
 
 	while (1) {
-		state = state & E_INITBMP180;
-		if (state & E_INITBMP180 || bmp180_read(&temp_bmp, &pres) != 0)
-			state |= E_BMP180;
-		if (dht22_read(&temp, &hum) != 0)
-			state |= E_DHT22;
+		state = send_data(state);
 
-		putchar('#');
-
-		fputs("P:", stdout);
-		if (state & E_BMP180)
-			putchar('E');
-		else
-			print_32num(pres, 2);
-
-		fputs(";T:", stdout);
-		if (state & E_DHT22) {
-			if (state & E_BMP180)
-				putchar('E');
-			else
-				print_num(temp_bmp, 1);
-
-			fputs(";H:E", stdout);
-		} else {
-			print_num(temp, 1);
-			fputs(";H:", stdout);
-			print_num(hum, 1);
+		for (i = 0; i < SEND_DELAY*10; i++) {
+			check_rx();
+			_delay_ms(100);
 		}
-
-		fputs(";W:", stdout);
-		print_num(wind_speed(), 1);
-		fputs(";D:", stdout);
-		print_num(wind_dir(), 0);
-
-		fputs(";R:", stdout);
-		print_num(rain_get(), 1);
-
-		fputs(";@\n", stdout);
-
-		// if bmp180 failed, try to init again
-		if (state & E_INITBMP180 && bmp180_init() == 0)
-			state &= ~E_INITBMP180;
-
-		delay_s(5);
 	}
 
 	return 0;
