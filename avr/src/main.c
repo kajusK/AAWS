@@ -53,6 +53,8 @@
 
 enum sensor_state {
 	E_INITBMP180 = 1 << 0,
+	E_BMP180 = 1 << 1,
+	E_DHT22 = 1 << 2,
 };
 
 ISR(BADISR_vect)
@@ -107,6 +109,7 @@ static void print_32num(uint32_t num, uint8_t decimals)
 
 int main(int argc, char *argv[])
 {
+	int16_t temp_bmp;
 	int16_t temp;
 	uint32_t pres;
 	uint16_t hum;
@@ -120,7 +123,7 @@ int main(int argc, char *argv[])
 	fputs("Kajus 2016\n\r", stdout);
 
 	if (bmp180_init() != 0) {
-		state |= E_INITBMP180;
+		state |= E_INITBMP180 | E_BMP180;
 		fputs("Unable to init bmp180", stderr);
 	}
 
@@ -132,17 +135,28 @@ int main(int argc, char *argv[])
 	//set_sleep_mode()
 
 	while (1) {
+		state = state & E_INITBMP180;
+		if (state & E_INITBMP180 || bmp180_read(&temp_bmp, &pres) != 0)
+			state |= E_BMP180;
+		if (dht22_read(&temp, &hum) != 0)
+			state |= E_DHT22;
+
 		putchar('#');
 
 		fputs("P:", stdout);
-		if (state & E_INITBMP180 || bmp180_read(&temp, &pres) != 0)
+		if (state & E_BMP180)
 			putchar('E');
 		else
 			print_32num(pres, 2);
 
 		fputs(";T:", stdout);
-		if (dht22_read(&temp, &hum) != 0) {
-			fputs("E;H:E", stdout);
+		if (state & E_DHT22) {
+			if (state & E_BMP180)
+				putchar('E');
+			else
+				print_num(temp_bmp, 1);
+
+			fputs(";H:E", stdout);
 		} else {
 			print_num(temp, 1);
 			fputs(";H:", stdout);
