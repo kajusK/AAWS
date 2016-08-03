@@ -21,6 +21,8 @@ static int sqlite_create()
 	char *err = 0;
 	int res;
 
+	printf("Creating a new sqlite database\n");
+
 	res = sqlite3_exec(db, "CREATE TABLE 'weather' ( "
 			"timestamp INTEGER,"
 			"temp REAL,"
