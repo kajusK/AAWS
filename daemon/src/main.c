@@ -213,12 +213,14 @@ int main(int argc, char **argv)
 
 	signal(SIGINT, sig_handler);
 
+	printf("Checking station status\n");
 	while (!station_alive(serial_fd)) {
 		fprintf(stderr, "Station is not responding, "
 			"trying again in %d seconds...\n", RETRY_INTERVAL);
 		sleep(RETRY_INTERVAL);
 	}
 
+	printf("Entering main loop\n");
 	if (daemon)
 		daemonize(conf->pid_file, conf->log_file);
 
