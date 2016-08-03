@@ -1,6 +1,8 @@
 /*
  * Master mode TWI using hw TWI module
  *
+ * For license, see LICENSE.txt
+ *
  * Jakub Kaderka 2016
  */
 

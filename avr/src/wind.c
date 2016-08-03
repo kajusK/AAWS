@@ -8,6 +8,8 @@
  * https://en.wikipedia.org/wiki/Rotary_encoder
  * https://en.wikipedia.org/wiki/Gray_code#Single-track_Gray_code
  *
+ * For license, see LICENSE.txt
+ *
  * Jakub Kaderka 2016
  */
 
@@ -103,5 +105,5 @@ uint16_t wind_speed(void)
 		return 0;
 
 	//TODO do some real life measurements
-	return F_CPU/wind_pulse_length*WIND_CORRECTION;
+	return wind_pulse_length;//F_CPU/wind_pulse_length*WIND_CORRECTION;
 }

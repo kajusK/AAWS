@@ -6,6 +6,8 @@
  *
  * http://akizukidenshi.com/download/ds/aosong/AM2302.pdf
  *
+ * For license, see LICENSE.txt
+ *
  * Jakub Kaderka 2016
  *
  * TODO: rewrite dht22_wait_low/high to support timeout, sensor malofunction

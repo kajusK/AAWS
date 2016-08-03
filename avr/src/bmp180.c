@@ -6,6 +6,8 @@
  *
  * https://www.adafruit.com/datasheets/BST-BMP180-DS000-09.pdf
  *
+ * For license, see LICENSE.txt
+ *
  * Jakub Kaderka 2016
  */
 

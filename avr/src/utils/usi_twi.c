@@ -6,6 +6,8 @@
  * TODO: Rewrite waiting loops for pin change with some timeout to avoid
  * deadlocks
  *
+ * For license, see LICENSE.txt
+ *
  * Jakub Kaderka 2016
  */
 #include <avr/io.h>

@@ -3,6 +3,8 @@
  *
  * http://www.atmel.com/images/doc2564.pdf
  *
+ * For license, see LICENSE.txt
+ *
  * Jakub Kaderka 2016
  */
 #include <avr/io.h>

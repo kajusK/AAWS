@@ -1,6 +1,8 @@
 /*
  * Circular buffer
  *
+ * For license, see LICENSE.txt
+ *
  * Jakub Kaderka 2016
  */
 

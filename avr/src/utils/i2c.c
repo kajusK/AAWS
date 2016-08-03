@@ -1,6 +1,8 @@
 /*
  * Master mode i2c
  *
+ * For license, see LICENSE.txt
+ *
  * Jakub Kaderka 2016
  */
 

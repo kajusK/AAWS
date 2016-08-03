@@ -4,6 +4,8 @@
  * -40 to 85 (+-2) °C
  * 300 to 1100 (+-6) hPa
  *
+ * For license, see LICENSE.txt
+ *
  * Jakub Kaderka 2016
  */
 

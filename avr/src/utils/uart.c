@@ -4,6 +4,8 @@
  *
  * Using one stop bit and no parity
  *
+ * For license, see LICENSE.txt
+ *
  * Jakub Kaderka 2016
  */
 

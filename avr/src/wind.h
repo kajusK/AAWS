@@ -1,9 +1,11 @@
 /*
  * Wind measurements, using timer1
  *
- * Speed - up to 25,5 (+- 0,1) m/s (equals to 90 km/h, I doubt the anemometer would
- *	survive that)
+ * Speed - up to anemometer possibilities, I doubt it could survive more than
+ *		about 110km/h anyway - equals to violent storm)
  * Direction - +-12°
+ *
+ * For license, see LICENSE.txt
  *
  * Jakub Kaderka 2016
  */

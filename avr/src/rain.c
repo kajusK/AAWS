@@ -3,6 +3,8 @@
  *
  * https://en.wikipedia.org/wiki/Rain_gauge#Tipping_bucket_rain_gauge
  *
+ * For license, see LICENSE.txt
+ *
  * Jakub Kaderka 2016
  */
 
