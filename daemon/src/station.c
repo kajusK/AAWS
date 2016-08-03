@@ -12,6 +12,22 @@
 #include "station.h"
 #include "utils/serial.h"
 
+static int station_wait_ack(int fd)
+{
+	char c;
+
+	while(serial_getc(fd) != '#')
+		;
+	c = serial_getc(fd);
+
+	while(serial_getc(fd) != '@')
+		;
+
+	if (c == 'A')
+		return 0;
+	return 1;
+}
+
 /*
  * Decode message ( format #X:123.456;Y:567.89;@) to structure
  */
@@ -68,11 +84,14 @@ struct s_message station_read(int fd)
 	while (serial_getc(fd) != '#')
 		;
 
-	//TODO check to avoid overflow...
-	while ((*loc++ = serial_getc(fd)) != '@')
+	while ((*loc++ = serial_getc(fd)) != '@' && (buffer + 100) > loc)
 		;
 
 	*loc = '\0';
+
+#ifdef DEBUG
+	printf("Message: %s\n", buffer);
+#endif
 
 	return decode_message(buffer);
 }
@@ -83,6 +102,7 @@ struct s_message station_read(int fd)
 void station_rain_reset(int fd)
 {
 	serial_printf(fd, "#R@;");
+	station_wait_ack(fd);
 }
 
 /*
