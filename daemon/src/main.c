@@ -126,8 +126,6 @@ static void loop(int fd, struct s_config *conf)
 
 		//save period elapsed
 		if (cycles >= conf->save_period/SAMPLE_PERIOD) {
-			cycles = 0;
-
 			//get average
 			weather.wind_speed = weather.wind_speed / cycles;
 			weather.wind_dir = weather.wind_dir / cycles;
@@ -147,6 +145,8 @@ static void loop(int fd, struct s_config *conf)
 			//clear stuff
 			memset(&weather, 0, sizeof(weather));
 			rain_prev = data.rain;
+
+			cycles = 0;
 		}
 
 		//one hour elapsed
