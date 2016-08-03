@@ -1,7 +1,7 @@
 /*
  * Weather station with serial output
  *
- * temperature -40 to 85 (+-0,1) °C
+ * temperature -40 to 85 (+-0,5) °C
  * air pressure 300 to 1100 (+-6) hPa
  * humidity 0-100 (+-2) %RH
  *
