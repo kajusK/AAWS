@@ -85,7 +85,7 @@ int backend_sqlite(struct s_weather *weather, struct s_station *station,
 	res = sqlite3_prepare_v2(db, "INSERT INTO 'weather' (timestamp, temp,"
 			"humidity, rain, pressure, wind_speed, wind_gusts,"
 			"wind_direction, wind_gusts_dir) VALUES "
-		        "(strftime('%s','now'),?,?,?,?,?,?);",
+		        "(strftime('%s','now'),?,?,?,?,?,?,?,?);",
 			-1, &stmt, NULL);
 	if (res != SQLITE_OK) {
 		fprintf(stderr, "Unable to do query: %s\n", sqlite3_errmsg(db));
