@@ -75,6 +75,8 @@ void wind_init(void)
 
 	//enable interrupt on capture and overflow
 	TIMSK |= _BV(TOIE1) | _BV(TICIE1);
+
+	DDR(WIND_DIR_PORT) &= ~(0x1f << WIND_DIR_START);
 }
 
 /*
@@ -89,11 +91,11 @@ uint16_t wind_dir(void)
 
 	state = PIN(WIND_DIR_PORT) >> WIND_DIR_START;
 	state &= 0x1f;
-	--state;		//first index not defined
+	--state;		//00001 not defined
 	if (state > 29)
 		return 666;	//not defined
 
-	return wind_table[state];
+	return pgm_read_dword(&wind_table[state]);
 }
 
 /*
