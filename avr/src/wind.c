@@ -46,10 +46,6 @@ ISR(TIMER1_CAPT_vect)
 		return;
 
 	wind_pulse_length = ICR1;
-
-	//too short high pulses (captured rising edge, but pin gone low before
-	//we could exit INT) can be safely ignored as the only outcome
-	//is skipping next pulse, another one will be captured correctly
 }
 
 ISR(TIMER1_OVF_vect)
@@ -65,17 +61,15 @@ ISR(TIMER1_OVF_vect)
 
 void wind_init(void)
 {
-	//clear timer
-	TCCR1B = 0;
+	//configure port for wind direction
+	DDR(WIND_DIR_PORT) &= ~(0x1f << WIND_DIR_START);
 
-	//TODO configure prescaler according to F_CPU
-	//enable noise canceler, wait for failing edge, no prescaler
-	TCCR1B = _BV(ICNC1) | TIMER1_PRESALER_1;
+	//enable noise canceler, wait for failing edge, prescaler 64
+	TCCR1A = 0;
+	TCCR1B = _BV(ICNC1) | _BV(CS11) | _BV(CS10);
 
 	//enable interrupt on capture and overflow
 	TIMSK |= _BV(TOIE1) | _BV(TICIE1);
-
-	DDR(WIND_DIR_PORT) &= ~(0x1f << WIND_DIR_START);
 }
 
 /*
@@ -106,5 +100,5 @@ uint16_t wind_speed(void)
 		return 0;
 
 	//TODO do some real life measurements
-	return wind_pulse_length;//F_CPU/wind_pulse_length*WIND_CORRECTION;
+	return F_CPU/wind_pulse_length;//*WIND_CORRECTION;
 }
