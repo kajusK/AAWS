@@ -54,14 +54,13 @@ ISR(TIMER1_CAPT_vect)
 
 ISR(TIMER1_OVF_vect)
 {
-	//waiting for failing edge, overflow can be safely ignored
+	wind_pulse_length = 0;
+	//waiting for failing edge
 	if (!(TCCR1B & _BV(ICES1)))
 		return;
 
-	//pulse is too long, no wind blowing
 	//wait for next failing edge and ignore current pulse
 	TCCR1B ^= _BV(ICES1);
-	wind_pulse_length = 0;
 }
 
 void wind_init(void)
