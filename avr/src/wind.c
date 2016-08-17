@@ -17,6 +17,7 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <avr/interrupt.h>
+#include <util/atomic.h>
 
 #include "config.h"
 
@@ -96,9 +97,15 @@ uint16_t wind_dir(void)
  */
 uint16_t wind_speed(void)
 {
-	if (wind_pulse_length == 0)
+	uint16_t local_length;
+
+	ATOMIC_BLOCK(ATOMIC_FORCEON) {
+		local_length = wind_pulse_length;
+	}
+
+	if (local_length == 0)
 		return 0;
 
 	//TODO do some real life measurements
-	return F_CPU/wind_pulse_length;//*WIND_CORRECTION;
+	return F_CPU/local_length;//*WIND_CORRECTION;
 }

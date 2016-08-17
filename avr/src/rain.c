@@ -11,6 +11,7 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <stdint.h>
+#include <util/atomic.h>
 
 #include "config.h"
 
@@ -42,7 +43,11 @@ void rain_init(void)
  */
 uint16_t rain_get(void)
 {
-	return rain_count*RAIN_MM_PER_PULSE;
+	uint16_t rain_local;
+	ATOMIC_BLOCK(ATOMIC_FORCEON) {
+		rain_local = rain_count;
+	}
+	return rain_local*RAIN_MM_PER_PULSE;
 }
 
 /*
@@ -50,5 +55,7 @@ uint16_t rain_get(void)
  */
 void rain_reset(void)
 {
-	rain_count = 0;
+	ATOMIC_BLOCK(ATOMIC_FORCEON) {
+		rain_count = 0;
+	}
 }
