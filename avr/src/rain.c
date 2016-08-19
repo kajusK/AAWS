@@ -17,7 +17,11 @@
 
 static volatile uint16_t rain_count;
 
+#if RAIN_INT == 1
+ISR(INT1_vect)
+#else
 ISR(INT0_vect)
+#endif
 {
 	++rain_count;
 
@@ -34,8 +38,13 @@ void rain_init(void)
 	rain_count = 0;
 
 	// interrupt on rising edge
+#if RAIN_INT == 1
+	MCUCR |= ISC10 | ISC11;
+	GIMSK |= _BV(INT1);
+#else
 	MCUCR |= ISC00 | ISC01;
 	GIMSK |= _BV(INT0);
+#endif
 }
 
 /*

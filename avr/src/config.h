@@ -38,12 +38,15 @@
  */
 // dht22 - humidity and temp
 #define DHT22_PORT	D
-#define DHT22		6
+#define DHT22		5
 
 //wind dir, requires 5 pins in a row, define first pin and gate, the defined
 //pin and folowing 4 will be used, e.g. 2 means pins 2,3,4,5,6 will be used
 #define WIND_DIR_PORT	A
 #define WIND_DIR_START	0
+
+//rain sensor is tied to INT pin, select either INT0 or INT1
+#define RAIN_INT 0
 
 //rain sensor is using pin associated with INT0
 //wind speed sensor is using pin ICP1
