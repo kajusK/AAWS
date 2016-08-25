@@ -40,8 +40,6 @@
  * For license, see LICENSE.txt
  *
  * Jakub Kaderka 2016
- *
- * TODO: Read commands from serial
  */
 
 #include <stdio.h>
