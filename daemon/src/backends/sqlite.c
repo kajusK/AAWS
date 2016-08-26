@@ -29,6 +29,7 @@ static int sqlite_create()
 			"humidity REAL,"
 			"rain REAL,"
 			"pressure REAL,"
+			"uv REAL,"
 			"wind_speed REAL,"
 			"wind_gusts REAL,"
 			"wind_gusts_dir INTEGER,"
@@ -84,8 +85,8 @@ int backend_sqlite(struct s_weather *weather, struct s_station *station,
 
 	res = sqlite3_prepare_v2(db, "INSERT INTO 'weather' (timestamp, temp,"
 			"humidity, rain, pressure, wind_speed, wind_gusts,"
-			"wind_direction, wind_gusts_dir) VALUES "
-		        "(strftime('%s','now'),?,?,?,?,?,?,?,?);",
+			"wind_direction, wind_gusts_dir, uv) VALUES "
+		        "(strftime('%s','now'),?,?,?,?,?,?,?,?,?);",
 			-1, &stmt, NULL);
 	if (res != SQLITE_OK) {
 		fprintf(stderr, "Unable to do query: %s\n", sqlite3_errmsg(db));
@@ -100,6 +101,7 @@ int backend_sqlite(struct s_weather *weather, struct s_station *station,
 	sqlite3_bind_int(stmt, 6, weather->wind_gusts);
 	sqlite3_bind_int(stmt, 7, weather->wind_dir);
 	sqlite3_bind_int(stmt, 8, weather->wind_gusts_dir);
+	sqlite3_bind_int(stmt, 8, weather->uv);
 
 	if (sqlite3_step(stmt) != SQLITE_DONE) {
 		fprintf(stderr, "Unable to do query: %s\n", sqlite3_errmsg(db));

@@ -28,6 +28,7 @@ static int backend_mysql_create()
 			"humidity FLOAT,"
 			"rain FLOAT,"
 			"pressure FLOAT,"
+			"uv FLOAT,"
 			"wind_speed FLOAT,"
 			"wind_gusts FLOAT,"
 			"wind_gusts_dir INT,"
@@ -89,12 +90,12 @@ int backend_mysql(struct s_weather *weather, struct s_station *station,
 	char query[256];
 
 	sprintf(query, "INSERT INTO `weather` (temp, humidity, rain, pressure,"
-		       "wind_speed, wind_gusts, wind_direction, wind_gusts_dir)"
-		       " VALUES (%f,%f,%f,%f,%f,%f,%d,%d)",
+		       "wind_speed, wind_gusts, wind_direction, wind_gusts_dir,"
+		       " uv) VALUES (%f,%f,%f,%f,%f,%f,%d,%d,%f)",
 		       weather->temp, weather->humidity, weather->rain,
 		       weather->pressure, weather->wind_speed,
 		       weather->wind_gusts, weather->wind_dir,
-		       weather->wind_gusts_dir);
+		       weather->wind_gusts_dir, weather->uv);
 
 	if (mysql_query(conn, query) != 0) {
 		fprintf(stderr, "%s\n", mysql_error(conn));

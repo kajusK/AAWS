@@ -119,6 +119,7 @@ static void loop(int fd, struct s_config *conf)
 		weather.humidity += data.humidity;
 		weather.temp += data.temp;
 		weather.pressure += data.pressure;
+		weather.uv += data.uv;
 
 		sleep(SAMPLE_PERIOD);
 		cycles++;
@@ -131,6 +132,7 @@ static void loop(int fd, struct s_config *conf)
 			weather.wind_dir = weather.wind_dir / cycles;
 			weather.humidity = weather.humidity / cycles;
 			weather.temp = weather.temp / cycles;
+			weather.uv = weather.uv / cycles;
 
 			weather.pressure = weather.pressure / cycles;
 			weather.pressure = press_relative(weather.pressure, conf->station.elevation);

@@ -65,6 +65,9 @@ static struct s_message decode_message(char *message)
 		case 'D':
 			msg.wind_dir = strtol(c+2, &c, 10);
 			break;
+		case 'U':
+			msg.uv = strtof(c+2, &c);
+			break;
 		default:
 			fprintf(stderr, "Unrecognized message item %c", *c);
 			break;

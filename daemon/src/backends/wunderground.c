@@ -38,6 +38,7 @@ int backend_wunderground(struct s_weather *weather, struct s_station *station,
 		"humidity=%.2f&"
 		"baromin=%.2f&"
 		"rainin=%.2f&"
+		"UV=%.1f&"
 		"softwaretype=AAWS",
 		creds->username,
 		creds->password,
@@ -49,7 +50,8 @@ int backend_wunderground(struct s_weather *weather, struct s_station *station,
 		CtoF(weather->dew_point),
 		weather->humidity,
 		HPAtoINCH(weather->pressure),
-		MMtoINCH(weather->rain_1h));
+		MMtoINCH(weather->rain_1h),
+		weather->uv);
 
 	req_res = http_request(W_URL, GET, buf, NULL, &res, 1);
 

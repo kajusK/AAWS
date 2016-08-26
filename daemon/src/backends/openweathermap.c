@@ -37,6 +37,7 @@ int backend_openweathermap(struct s_weather *weather, struct s_station *station,
 		"pressure=%.2f&"
 		"rain_1h=%.2f&"
 		"dewpoint=%.1f&"
+		"uv=%.1f&"
 		"lat=%s&"
 		"long=%s&"
 		"alt=%d&"
@@ -49,6 +50,7 @@ int backend_openweathermap(struct s_weather *weather, struct s_station *station,
 		weather->pressure,
 		weather->rain_1h,
 		weather->dew_point,
+		weather->uv,
 		station->latitude,
 		station->longitude,
 		station->elevation,

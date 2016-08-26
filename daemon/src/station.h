@@ -14,6 +14,7 @@ struct s_message {
 	float pressure;
 	float rain;
 	float wind_speed;
+	float uv;
 	int wind_dir;
 };
 

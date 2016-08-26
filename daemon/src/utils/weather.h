@@ -21,6 +21,8 @@ struct s_weather {
 
 	float rain;		/* current rain intensity - mm/h estimation */
 	float rain_1h;		/* rain in last hour */
+
+	float uv;		/* UV index */
 };
 
 enum t_cloud {

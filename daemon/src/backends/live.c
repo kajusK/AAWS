@@ -40,6 +40,7 @@ int backend_live(struct s_weather *weather, struct s_station *station,
 		   "dew_point: %.1f °C\n"
 		   "humidity: %.1f %%RH\n"
 		   "pressure: %.2f hPa\n"
+		   "uv_index: %.1f\n"
 		   "wind_speed: %.1f m/s\n"
 		   "wind_direction: %d °\n"
 		   "wind_gusts_speed: %.1f m/s\n"
@@ -53,6 +54,7 @@ int backend_live(struct s_weather *weather, struct s_station *station,
 		   weather->dew_point,
 		   weather->humidity,
 		   weather->pressure,
+		   weather->uv,
 		   weather->wind_speed,
 		   weather->wind_dir,
 		   weather->wind_gusts,
