@@ -12,6 +12,9 @@
 // serial baudrate
 #define BAUD	9600
 
+//supply voltage - used in ADC calculations, should be between 3.3 and 5
+#define VCC_VOLTAGE 5
+
 /*
  * Wind speed calibration
  *
@@ -47,6 +50,9 @@
 
 //rain sensor is tied to INT pin, select either INT0 or INT1
 #define RAIN_INT 0
+
+//ml8511 adcX port
+#define ML8511_ADC 7
 
 //rain sensor is using pin associated with INT0
 //wind speed sensor is using pin ICP1

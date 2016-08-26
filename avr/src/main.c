@@ -9,7 +9,7 @@
  * ==============
  * Data format:
  * ------------
- * #T:23.5;H:32;P:1013.25;R:2.55;W:11.5;D:E;@
+ * #T:23.5;H:32;P:1013.25;R:2.55;W:11.5;D:E;U:5.6;@
  *
  * Explanation:
  * # - start of the message
@@ -19,6 +19,7 @@
  * R - rain counter since last reset in mm
  * W - wind speed in m/s
  * D - wind direction in degrees
+ * U - UV index (0-15)
  * @ - end of message
  * E - error, sensor dead
  *
@@ -56,6 +57,7 @@
 #include "dht22.h"
 #include "rain.h"
 #include "wind.h"
+#include "ml8511.h"
 #include "utils/uart.h"
 
 #define SEND_DELAY 5
@@ -150,6 +152,7 @@ static enum sensor_state send_data(enum sensor_state state)
 	int16_t temp;
 	uint32_t pres;
 	uint16_t hum;
+	uint8_t uv;
 
 	state = state & E_INITBMP180;
 	if (state & E_INITBMP180 || bmp180_read(&temp_bmp, &pres) != 0)
@@ -187,6 +190,13 @@ static enum sensor_state send_data(enum sensor_state state)
 	fputs(";R:", stdout);
 	print_num(rain_get(), 1);
 
+	fputs(";U:", stdout);
+	uv = ml8511_get();
+	if (uv == 0xff)
+		putchar('E');
+	else
+		print_num(uv, 1);
+
 	fputs(";@\n", stdout);
 
 	// if bmp180 failed, try to init again
@@ -222,7 +232,6 @@ int main(int argc, char *argv[])
 
 	while (1) {
 		state = send_data(state);
-
 		for (i = 0; i < SEND_DELAY*10; i++) {
 			check_rx();
 			_delay_ms(100);
