@@ -12,6 +12,7 @@
 #include "station.h"
 #include "utils/serial.h"
 
+#define MSG_BUF_LEN 100
 #define check_item_err(c, err, type) { if ((c) == 'E') err |= type; }
 
 static int station_wait_ack(int fd)
@@ -101,13 +102,13 @@ static struct s_message decode_message(char *message)
 
 struct s_message station_read(int fd)
 {
-	char buffer[100];
+	char buffer[MSG_BUF_LEN];
 	char *loc = buffer;
 
 	while (serial_getc(fd) != '#')
 		;
 
-	while ((*loc++ = serial_getc(fd)) != '@' && (buffer + 100) > loc)
+	while ((*loc++ = serial_getc(fd)) != '@' && (buffer + MSG_BUF_LEN) > loc)
 		;
 
 	*loc = '\0';
