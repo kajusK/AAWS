@@ -116,7 +116,7 @@ int station_alive(int fd)
 	char c;
 	int count = 0;
 
-	serial_printf(fd, "#R@;");
+	serial_printf(fd, "#R;@");
 
 	//wait for data to show up on serial line
 	while (serial_read_noblock(fd, &c, 1) == 0 && count++ < 50)
