@@ -54,6 +54,13 @@ static int conf_validate(struct s_config *conf)
 		ret = 1;
 	}
 
+	if (strcmp("default", conf->station.name) == 0)
+		fprintf(stderr, "Warn: You should specify station's name\n");
+
+	if (strcmp("default", conf->station.latitude) == 0 ||
+            strcmp("default", conf->station.longitude) == 0)
+		fprintf(stderr, "Warn: You should specify station's location\n");
+
 	if (conf->backends == 0) {
 		fprintf(stderr, "At least one backend must be enabled\n");
 		ret = 1;
