@@ -53,6 +53,10 @@ class Weather {
 		return $data;
 	}
 
+	public static function getDay()
+	{
+		return Db::getAllSince(time()-86400, 1);
+	}
 
 	public static function getWeek()
 	{

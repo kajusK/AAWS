@@ -79,6 +79,9 @@ if ($page == "index") {
 		case "year":
 			$data['graph'] = Weather::getYear();
 			break;
+		case "day":
+			$data['graph'] = Weather::getDay();
+			break;
 		default:
 			Err::statusCode(404);
 			$page = "404";

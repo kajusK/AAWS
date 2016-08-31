@@ -49,6 +49,7 @@ $translation = array(
 'Month' => "Month",
 'Year' => "Year",
 'Week' => "Week",
+'Day' => "Day",
 'Webcam' => "Webcam",
 'Record values' => "Record values",
 'Maximum' => "Maximum",

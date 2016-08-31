@@ -13,6 +13,7 @@ function add_graph($id)
 <div class="graph">
 <div id="<?= $id ?>"><?= Lang::get("Enable javascript") ?></div>
 
+<a href="<?= get_link("index", false, array('range'=>'day')) ?>"><?= Lang::get("Day") ?></a>
 <a href="<?= get_link("index") ?>"><?= Lang::get("Week") ?></a>
 <a href="<?= get_link("index", false, array('range'=>'month')) ?>"><?= Lang::get("Month") ?></a>
 <a href="<?= get_link("index", false, array('range'=>'year')) ?>"><?= Lang::get("Year") ?></a>
