@@ -3,6 +3,4 @@
 * Add satellite images reading - rtl-sdr
 * Add more extremes (rain 24h/week/month/year, time without rain, longest rain...)
 * Generate METAR messages
-* Implement error reading in daemon
-* Add feature to disable missing sensors, etc to daemon
 * Add moon phases to web UI

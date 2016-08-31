@@ -105,21 +105,37 @@ static void loop(int fd, struct s_config *conf)
 	float rain_1h = 0;
 
 	memset(&weather, 0, sizeof(weather));
+	weather.valid = ~0;
 
 	while (1) {
 		data = station_read(fd);
 
-		if (data.val.wind_speed > weather.wind_gusts) {
-			weather.wind_gusts_dir = data.val.wind_dir;
-			weather.wind_gusts = data.val.wind_speed;
+		if (data.val.wind_speed > weather.data.wind_gusts) {
+			weather.data.wind_gusts_dir = data.val.wind_dir;
+			weather.data.wind_gusts = data.val.wind_speed;
 		}
 		//average data
-		weather.wind_speed += data.val.wind_speed;
-		weather.wind_dir += data.val.wind_dir;
-		weather.humidity += data.val.humidity;
-		weather.temp += data.val.temp;
-		weather.pressure += data.val.pressure;
-		weather.uv += data.val.uv;
+		weather.data.wind_speed += data.val.wind_speed;
+		weather.data.wind_dir += data.val.wind_dir;
+		weather.data.humidity += data.val.humidity;
+		weather.data.temp += data.val.temp;
+		weather.data.pressure += data.val.pressure;
+		weather.data.uv += data.val.uv;
+
+		if (!(data.pres & P_TEMP) || (data.err & E_TEMP))
+			weather.valid &= ~(V_TEMP | V_DEW_POINT);
+		if (!(data.pres & P_PRESSURE) || (data.err & E_PRESSURE))
+			weather.valid &= ~V_PRESSURE;
+		if (!(data.pres & P_HUMIDITY) || (data.err & E_HUMIDITY))
+			weather.valid &= ~(V_HUMIDITY | V_DEW_POINT);
+		if (!(data.pres & P_UV) || (data.err & E_UV))
+			weather.valid &= ~V_UV;
+		if (!(data.pres & P_WIND_DIR) || (data.err & E_WIND_DIR))
+			weather.valid &= ~(V_WIND_DIR | V_WIND_GUSTS_DIR);
+		if (!(data.pres & P_WIND_SPEED) || (data.err & E_WIND_SPEED))
+			weather.valid &= ~(V_WIND_SPEED | V_WIND_GUSTS | V_WIND_GUSTS_DIR);
+		if (!(data.pres & P_RAIN) || (data.err & E_RAIN))
+			weather.valid &= ~(V_RAIN & V_RAIN_1H);
 
 		sleep(SAMPLE_PERIOD);
 		cycles++;
@@ -128,24 +144,25 @@ static void loop(int fd, struct s_config *conf)
 		//save period elapsed
 		if (cycles >= conf->save_period/SAMPLE_PERIOD) {
 			//get average
-			weather.wind_speed = weather.wind_speed / cycles;
-			weather.wind_dir = weather.wind_dir / cycles;
-			weather.humidity = weather.humidity / cycles;
-			weather.temp = weather.temp / cycles;
-			weather.uv = weather.uv / cycles;
+			weather.data.wind_speed = weather.data.wind_speed / cycles;
+			weather.data.wind_dir = weather.data.wind_dir / cycles;
+			weather.data.humidity = weather.data.humidity / cycles;
+			weather.data.temp = weather.data.temp / cycles;
+			weather.data.uv = weather.data.uv / cycles;
 
-			weather.pressure = weather.pressure / cycles;
-			weather.pressure = press_relative(weather.pressure, conf->station.elevation);
-			weather.dew_point = dew_point(weather.humidity, weather.temp);
-			weather.rain_1h = rain_1h;
+			weather.data.pressure = weather.data.pressure / cycles;
+			weather.data.pressure = press_relative(weather.data.pressure, conf->station.elevation);
+			weather.data.dew_point = dew_point(weather.data.humidity, weather.data.temp);
+			weather.data.rain_1h = rain_1h;
 
 			//get rain intensity in last SAVE_PERIOD
-			weather.rain = (data.val.rain - rain_prev)*3600.0/conf->save_period;
+			weather.data.rain = (data.val.rain - rain_prev)*3600.0/conf->save_period;
 
 			backends_send(&weather, conf);
 
 			//clear stuff
 			memset(&weather, 0, sizeof(weather));
+			weather.valid = ~0;
 			rain_prev = data.val.rain;
 
 			cycles = 0;

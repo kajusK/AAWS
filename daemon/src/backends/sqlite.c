@@ -93,15 +93,15 @@ int backend_sqlite(struct s_weather *weather, struct s_station *station,
 		return -1;
 	}
 
-	sqlite3_bind_double(stmt, 1, weather->temp);
-	sqlite3_bind_double(stmt, 2, weather->humidity);
-	sqlite3_bind_double(stmt, 3, weather->rain);
-	sqlite3_bind_int(stmt, 4, weather->pressure);
-	sqlite3_bind_double(stmt, 5, weather->wind_speed);
-	sqlite3_bind_int(stmt, 6, weather->wind_gusts);
-	sqlite3_bind_int(stmt, 7, weather->wind_dir);
-	sqlite3_bind_int(stmt, 8, weather->wind_gusts_dir);
-	sqlite3_bind_int(stmt, 8, weather->uv);
+	sqlite3_bind_double(stmt, 1, weather->data.temp);
+	sqlite3_bind_double(stmt, 2, weather->data.humidity);
+	sqlite3_bind_double(stmt, 3, weather->data.rain);
+	sqlite3_bind_int(stmt, 4, weather->data.pressure);
+	sqlite3_bind_double(stmt, 5, weather->data.wind_speed);
+	sqlite3_bind_int(stmt, 6, weather->data.wind_gusts);
+	sqlite3_bind_int(stmt, 7, weather->data.wind_dir);
+	sqlite3_bind_int(stmt, 8, weather->data.wind_gusts_dir);
+	sqlite3_bind_int(stmt, 8, weather->data.uv);
 
 	if (sqlite3_step(stmt) != SQLITE_DONE) {
 		fprintf(stderr, "Unable to do query: %s\n", sqlite3_errmsg(db));

@@ -8,7 +8,21 @@
 #ifndef __WEATHER_H_
 #define __WEATHER_H_
 
-struct s_weather {
+enum weather_valid {
+	V_TEMP = 1 << 0,
+	V_DEW_POINT = 1 << 1,
+	V_HUMIDITY = 1 << 2,
+	V_PRESSURE = 1 << 3,
+	V_WIND_SPEED = 1 << 4,
+	V_WIND_GUSTS = 1 << 5,
+	V_WIND_DIR = 1 << 6,
+	V_WIND_GUSTS_DIR = 1 << 7,
+	V_RAIN = 1 << 8,
+	V_RAIN_1H = 1 << 9,
+	V_UV = 1 << 10,
+};
+
+struct s_weather_data {
 	float temp;		/* outdoor temp, degrees C */
 	float dew_point;	/* degrees C */
 	float humidity;		/* in %RH */
@@ -23,6 +37,11 @@ struct s_weather {
 	float rain_1h;		/* rain in last hour */
 
 	float uv;		/* UV index */
+};
+
+struct s_weather {
+	struct s_weather_data data;
+	enum weather_valid valid;
 };
 
 enum t_cloud {

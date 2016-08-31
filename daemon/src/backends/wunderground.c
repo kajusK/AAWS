@@ -22,36 +22,34 @@ int backend_wunderground(struct s_weather *weather, struct s_station *station,
 		   void *additional)
 {
 	char buf[256], *res = NULL;
+	char *buf_start = buf;
 	int req_res;
 	struct s_creds *creds = (struct s_creds *) additional;
+	struct s_print_item data[] = {
+			{"winddir=%.0f&", (float) weather->data.wind_dir,
+				weather->valid & V_WIND_DIR},
+			{"windspeedmph=%.1f&", MStoMPH(weather->data.wind_speed),
+				weather->valid & V_WIND_SPEED},
+			{"windgustsmph=%.1f&", MStoMPH(weather->data.wind_gusts),
+				weather->valid & V_WIND_GUSTS},
+			{"windgustsdir=%.0f&", (float) weather->data.wind_gusts_dir,
+				weather->valid & V_WIND_GUSTS_DIR},
+			{"tempf=%.1f&", CtoF(weather->data.temp),
+				weather->valid & V_TEMP},
+			{"dewptf=%.1f&", CtoF(weather->data.dew_point),
+				weather->valid & V_DEW_POINT},
+			{"humidity=%.1f&", weather->data.humidity,
+				weather->valid & V_HUMIDITY},
+			{"baromin=%.2f&", HPAtoINCH(weather->data.pressure),
+				weather->valid & V_PRESSURE},
+			{"rainin=%.2f&", MMtoINCH(weather->data.rain_1h),
+				weather->valid & V_RAIN_1H},
+			{"UV=%.1f", weather->data.uv,
+				weather->valid & V_UV}};
 
-	sprintf(buf, "action=updateraw&"
-		"ID=%s"
-		"PASSWORD=%s"
-		"dateutc=now"
-		"winddir=%d&"
-		"windspeedmph=%.1f&"
-		"windgustsmph=%.1f&"
-		"windgustsdir=%d&"
-		"tempf=%.1f&"
-		"dewptf=%.1f&"
-		"humidity=%.2f&"
-		"baromin=%.2f&"
-		"rainin=%.2f&"
-		"UV=%.1f&"
-		"softwaretype=AAWS",
-		creds->username,
-		creds->password,
-		weather->wind_dir,
-		MStoMPH(weather->wind_speed),
-		MStoMPH(weather->wind_gusts),
-		weather->wind_gusts_dir,
-		CtoF(weather->temp),
-		CtoF(weather->dew_point),
-		weather->humidity,
-		HPAtoINCH(weather->pressure),
-		MMtoINCH(weather->rain_1h),
-		weather->uv);
+	buf_start += sprintf(buf, "action=updateraw&ID=%s&PASSWORD=%s&dateutc=now&"
+		"softwaretype=AAWS&", creds->username, creds->password);
+	sprintf_valid(buf_start, data, sizeof(data)/sizeof(struct s_print_item));
 
 	req_res = http_request(W_URL, GET, buf, NULL, &res, 1);
 

@@ -11,6 +11,12 @@
 
 #include "config.h"
 
+struct s_print_item {
+	char *string;
+	float value;
+	char valid;
+};
+
 extern int sqlite_init(char *filename);
 extern int backend_mysql_init(struct s_db *db);
 extern int sqlite_add_rain(float rain);
@@ -55,5 +61,8 @@ extern int backends_send(struct s_weather *weather, struct s_config *config);
 
 /* Save hour sum of rain to backends, if supported */
 extern int backends_add_rain(float rain);
+
+/* print items from data to str where data->valid is true */
+extern int sprintf_valid(char *str, struct s_print_item data[], int count);
 
 #endif

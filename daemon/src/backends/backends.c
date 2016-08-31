@@ -7,6 +7,7 @@
  */
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "config.h"
 #include "utils/weather.h"
@@ -83,4 +84,18 @@ int backends_add_rain(float rain)
 	}
 
 	return ret;
+}
+
+int sprintf_valid(char *str, struct s_print_item data[], int count)
+{
+	int i;
+	char *pos = str;
+
+	for (i = 0; i < count; i++) {
+		if (!data[i].valid)
+			continue;
+		pos += sprintf(pos, data[i].string, data[i].value);
+	}
+
+	return pos - str;
 }

@@ -92,10 +92,11 @@ int backend_mysql(struct s_weather *weather, struct s_station *station,
 	sprintf(query, "INSERT INTO `weather` (temp, humidity, rain, pressure,"
 		       "wind_speed, wind_gusts, wind_direction, wind_gusts_dir,"
 		       " uv) VALUES (%f,%f,%f,%f,%f,%f,%d,%d,%f)",
-		       weather->temp, weather->humidity, weather->rain,
-		       weather->pressure, weather->wind_speed,
-		       weather->wind_gusts, weather->wind_dir,
-		       weather->wind_gusts_dir, weather->uv);
+		       weather->data.temp, weather->data.humidity,
+		       weather->data.rain, weather->data.pressure,
+		       weather->data.wind_speed, weather->data.wind_gusts,
+		       weather->data.wind_dir, weather->data.wind_gusts_dir,
+		       weather->data.uv);
 
 	if (mysql_query(conn, query) != 0) {
 		fprintf(stderr, "%s\n", mysql_error(conn));
