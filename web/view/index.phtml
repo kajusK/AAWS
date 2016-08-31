@@ -6,6 +6,19 @@
  * @license GNU General Public License, version 2; see LICENSE.txt
  */
 defined("IN_APP") or die("Unauthorized access");
+
+function add_graph($id)
+{
+?>
+<div class="graph">
+<div id="<?= $id ?>"><?= Lang::get("Enable javascript") ?></div>
+
+<a href="<?= get_link("index") ?>"><?= Lang::get("Week") ?></a>
+<a href="<?= get_link("index", false, array('range'=>'month')) ?>"><?= Lang::get("Month") ?></a>
+<a href="<?= get_link("index", false, array('range'=>'year')) ?>"><?= Lang::get("Year") ?></a>
+</div>
+<?php
+}
 ?>
 
 <div id="overview">
@@ -38,13 +51,7 @@ defined("IN_APP") or die("Unauthorized access");
 	<tr><td><?= Lang::get("Min in 24h") ?></td><td><?= $temp_min ?>&deg;C</td></tr>
 	<tr><td><?= Lang::get("Average in 24h") ?></td><td><?= $temp_avg ?>&deg;C</td></tr>
 </table>
-<div class="graph">
-<div id="graph_temp"><?= Lang::get("Enable javascript") ?></div>
-
-<a href="<?= get_link("index") ?>"><?= Lang::get("Week") ?></a>
-<a href="<?= get_link("index", false, array('range'=>'month')) ?>"><?= Lang::get("Month") ?></a>
-<a href="<?= get_link("index", false, array('range'=>'year')) ?>"><?= Lang::get("Year") ?></a>
-</div>
+<?php add_graph("graph_temp") ?>
 
 <h2><?= Lang::get("Wind") ?></h2>
 <table>
@@ -52,13 +59,7 @@ defined("IN_APP") or die("Unauthorized access");
 	<tr><td><?= Lang::get("Direction") ?></td><td><?= $wind_dir ?> &deg;</td></tr>
 	<tr><td><?= Lang::get("Gusts") ?></td><td><?= $wind_gusts ?> m/s</td></tr>
 </table>
-<div class="graph">
-<div id="graph_wind"><?= Lang::get("Enable javascript") ?></div>
-
-<a href="<?= get_link("index") ?>"><?= Lang::get("Week") ?></a>
-<a href="<?= get_link("index", false, array('range'=>'month')) ?>"><?= Lang::get("Month") ?></a>
-<a href="<?= get_link("index", false, array('range'=>'year')) ?>"><?= Lang::get("Year") ?></a>
-</div>
+<?php add_graph("graph_wind") ?>
 
 <h2><?= Lang::get("Rain falls") ?></h2>
 <table>
@@ -69,39 +70,21 @@ defined("IN_APP") or die("Unauthorized access");
 	<tr><td><?= Lang::get("This year") ?></td><td><?= $rain_year ?> mm</td></tr>
 	<tr><td><?= Lang::get("Latest rainfalls") ?></td><td><?= $rain_date ?></td></tr>
 </table>
-<div class="graph">
-<div id="graph_rain"><?= Lang::get("Enable javascript") ?></div>
-
-<a href="<?= get_link("index") ?>"><?= Lang::get("Week") ?></a>
-<a href="<?= get_link("index", false, array('range'=>'month')) ?>"><?= Lang::get("Month") ?></a>
-<a href="<?= get_link("index", false, array('range'=>'year')) ?>"><?= Lang::get("Year") ?></a>
-</div>
+<?php add_graph("graph_rain") ?>
 
 <h2><?= Lang::get("Pressure") ?></h2>
 <table>
 	<tr><td><?= Lang::get("Relative pressure") ?></td><td><?= $pres ?> hPa</td></tr>
 	<tr><td><?= Lang::get("Tendency") ?></td><td><?= $pres_tendency ?> hPa/hod.</td></tr>
 </table>
-<div class="graph">
-<div id="graph_pres"><?= Lang::get("Enable javascript") ?></div>
-
-<a href="<?= get_link("index") ?>"><?= Lang::get("Week") ?></a>
-<a href="<?= get_link("index", false, array('range'=>'month')) ?>"><?= Lang::get("Month") ?></a>
-<a href="<?= get_link("index", false, array('range'=>'year')) ?>"><?= Lang::get("Year") ?></a>
-</div>
+<?php add_graph("graph_pres") ?>
 
 <h2><?= Lang::get("Humidity") ?></h2>
 <table>
 	<tr><td><?= Lang::get("Current") ?></td><td><?= $humidity ?> %RH</td></tr>
 	<tr><td><?= Lang::get("Tendency") ?></td><td><?= $humidity_tendency ?> %RH</td></tr>
 </table>
-<div class="graph">
-<div id="graph_humidity"><?= Lang::get("Enable javascript") ?></div>
-
-<a href="<?= get_link("index") ?>"><?= Lang::get("Week") ?></a>
-<a href="<?= get_link("index", false, array('range'=>'month')) ?>"><?= Lang::get("Month") ?></a>
-<a href="<?= get_link("index", false, array('range'=>'year')) ?>"><?= Lang::get("Year") ?></a>
-</div>
+<?php add_graph("graph_humidity") ?>
 
 <h2><?= Lang::get("Sun") ?></h2>
 <table>
@@ -109,13 +92,7 @@ defined("IN_APP") or die("Unauthorized access");
 	<tr><td><?= Lang::get("Sunrise") ?></td><td><?= $sunrise ?></td></tr>
 	<tr><td><?= Lang::get("Sunset") ?></td><td><?= $sunset ?></td></tr>
 </table>
-<div class="graph">
-<div id="graph_uv"><?= Lang::get("Enable javascript") ?></div>
-
-<a href="<?= get_link("index") ?>"><?= Lang::get("Week") ?></a>
-<a href="<?= get_link("index", false, array('range'=>'month')) ?>"><?= Lang::get("Month") ?></a>
-<a href="<?= get_link("index", false, array('range'=>'year')) ?>"><?= Lang::get("Year") ?></a>
-</div>
+<?php add_graph("graph_uv") ?>
 
 </div>
 
