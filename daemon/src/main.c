@@ -109,17 +109,17 @@ static void loop(int fd, struct s_config *conf)
 	while (1) {
 		data = station_read(fd);
 
-		if (data.wind_speed > weather.wind_gusts) {
-			weather.wind_gusts_dir = data.wind_dir;
-			weather.wind_gusts = data.wind_speed;
+		if (data.val.wind_speed > weather.wind_gusts) {
+			weather.wind_gusts_dir = data.val.wind_dir;
+			weather.wind_gusts = data.val.wind_speed;
 		}
 		//average data
-		weather.wind_speed += data.wind_speed;
-		weather.wind_dir += data.wind_dir;
-		weather.humidity += data.humidity;
-		weather.temp += data.temp;
-		weather.pressure += data.pressure;
-		weather.uv += data.uv;
+		weather.wind_speed += data.val.wind_speed;
+		weather.wind_dir += data.val.wind_dir;
+		weather.humidity += data.val.humidity;
+		weather.temp += data.val.temp;
+		weather.pressure += data.val.pressure;
+		weather.uv += data.val.uv;
 
 		sleep(SAMPLE_PERIOD);
 		cycles++;
@@ -140,13 +140,13 @@ static void loop(int fd, struct s_config *conf)
 			weather.rain_1h = rain_1h;
 
 			//get rain intensity in last SAVE_PERIOD
-			weather.rain = (data.rain - rain_prev)*3600.0/conf->save_period;
+			weather.rain = (data.val.rain - rain_prev)*3600.0/conf->save_period;
 
 			backends_send(&weather, conf);
 
 			//clear stuff
 			memset(&weather, 0, sizeof(weather));
-			rain_prev = data.rain;
+			rain_prev = data.val.rain;
 
 			cycles = 0;
 		}
@@ -154,8 +154,8 @@ static void loop(int fd, struct s_config *conf)
 		//one hour elapsed
 		if (hour_counter >= 3600/SAMPLE_PERIOD){
 			hour_counter = 0;
-			rain_1h = data.rain;
-			backends_add_rain(data.rain);
+			rain_1h = data.val.rain;
+			backends_add_rain(data.val.rain);
 
 			station_rain_reset(fd);
 			rain_prev = 0;

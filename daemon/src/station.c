@@ -12,6 +12,8 @@
 #include "station.h"
 #include "utils/serial.h"
 
+#define check_item_err(c, err, type) { if ((c) == 'E') err |= type; }
+
 static int station_wait_ack(int fd)
 {
 	char c;
@@ -36,6 +38,9 @@ static struct s_message decode_message(char *message)
 	struct s_message msg;
 	char *c = message;
 
+	msg.err = 0;
+	msg.pres = 0;
+
 	if (*c == '#')
 		c++;
 
@@ -43,30 +48,45 @@ static struct s_message decode_message(char *message)
 		switch (*c) {
 		case ';':
 		case ':':
+		case 'E':
 			break;
 		case '@':
 			return msg;
 			break;
 		case 'T':
-			msg.temp = strtof(c+2, &c);
+			check_item_err(*(c+2), msg.err, E_TEMP);
+			msg.pres |= P_TEMP;
+			msg.val.temp = strtof(c+2, &c);
 			break;
 		case 'H':
-			msg.humidity = strtof(c+2, &c);
+			check_item_err(*(c+2), msg.err, E_HUMIDITY);
+			msg.pres |= P_HUMIDITY;
+			msg.val.humidity = strtof(c+2, &c);
 			break;
 		case 'P':
-			msg.pressure = strtof(c+2, &c);
+			check_item_err(*(c+2), msg.err, E_PRESSURE);
+			msg.pres |= P_PRESSURE;
+			msg.val.pressure = strtof(c+2, &c);
 			break;
 		case 'R':
-			msg.rain = strtof(c+2, &c);
+			check_item_err(*(c+2), msg.err, E_RAIN);
+			msg.pres |= P_RAIN;
+			msg.val.rain = strtof(c+2, &c);
 			break;
 		case 'W':
-			msg.wind_speed = strtof(c+2, &c);
+			check_item_err(*(c+2), msg.err, E_WIND_SPEED);
+			msg.pres |= P_WIND_SPEED;
+			msg.val.wind_speed = strtof(c+2, &c);
 			break;
 		case 'D':
-			msg.wind_dir = strtol(c+2, &c, 10);
+			check_item_err(*(c+2), msg.err, E_WIND_DIR);
+			msg.pres |= P_WIND_DIR;
+			msg.val.wind_dir = strtol(c+2, &c, 10);
 			break;
 		case 'U':
-			msg.uv = strtof(c+2, &c);
+			check_item_err(*(c+2), msg.err, E_UV);
+			msg.pres |= P_UV;
+			msg.val.uv = strtof(c+2, &c);
 			break;
 		default:
 			fprintf(stderr, "Unrecognized message item %c", *c);
