@@ -3,4 +3,4 @@
 *.fcstd1
 web/config.ini
 daemon/weather_daemon
-*/weather.db
+*.db
