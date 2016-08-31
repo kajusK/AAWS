@@ -5,6 +5,7 @@ require_once "rain.php";
 require_once "temp.php";
 require_once "press.php";
 require_once "humidity.php";
+require_once "sun.php";
 
 class Weather {
 	public static function generate() {
@@ -26,6 +27,9 @@ class Weather {
 			'rain_date' => Rain::getLatestDate(),
 			'pres' => Press::getCurrent(),
 			'pres_tendency' => Press::getTendency(),
+			'uv_index' => Sun::getUV(),
+			'sunrise' => Sun::getSunrise(),
+			'sunset' => Sun::getSunset(),
 			'humidity' => Humidity::getCurrent(),
 			'humidity_tendency' => Humidity::getTendency());
 
@@ -40,6 +44,7 @@ class Weather {
 			'humidity_min' => Humidity::getMin(),
 			'pressure_max' => Press::getMax(),
 			'pressure_min' => Press::getMin(),
+			'uv_max' => Sun::getMaxUV(),
 			'wind_speed_max' => Wind::getMaxSpeed(),
 			'wind_gusts_max' => Wind::getMaxGusts(),
 			'rain_intensity_max' => Rain::getMaxIntensity(),

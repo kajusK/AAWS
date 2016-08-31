@@ -54,4 +54,8 @@ $translation = array(
 'Maximum' => "Maximum",
 'Minimum' => "Minimum",
 'Hour maximum' => "Maximum sum of rain in an hour",
+'UV index' => "UV index",
+'Sun' => "Sun",
+'Sunrise' => "Sunrise",
+'Sunset' => "Sunset",
 );

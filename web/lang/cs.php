@@ -54,4 +54,8 @@ $translation = array(
 'Maximum' => "Maximum",
 'Minimum' => "Minimum",
 'Hour maximum' => "Nejvyšší hodinový úhrn srážek",
+'UV index' => "UV index",
+'Sun' => "Slunce",
+'Sunrise' => "Východ",
+'Sunset' => "Západ",
 );
