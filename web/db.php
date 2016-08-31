@@ -57,7 +57,7 @@ Class Db
 		}
 
 		if (!isset(self::$latest[$table][$field]))
-			return nan;
+			return 'NaN';
 		return self::$latest[$table][$field];
 	}
 
