@@ -8,8 +8,9 @@ theme = "default";
 [station]
 #Name of the station's location
 name="Horní Dolní"
+#position is used for sunset/sunrise calculations, keep the format used
 latitude = "50° 10' 11.1234'' N"
-longtitude = "14° 11' 12.13'' E"
+longitude = "14° 11' 12.13'' E"
 #above the sea level
 elevation = "123"
 
