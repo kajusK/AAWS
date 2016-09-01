@@ -36,6 +36,7 @@ $translation = array(
 'Gusts' => "Nárazy",
 'Intensity' => "Intenzita",
 'In last hour' => "Za poslední hodinu",
+'In last 24 hours' => "Za posledních 24 hodin",
 'Since midnight' => "Od půlnoci",
 'This month' => "Tento měsíc",
 'This year' => "Tento rok",

@@ -17,6 +17,10 @@ class Rain
 		return Db::latest("rain", "rain");
 	}
 
+	public static function last24h() {
+		return Db::getSum("rain", time()-86400, "rain");
+	}
+
 	public static function sinceMidnight() {
 		return Db::getSum("rain", mktime(0,0,0), "rain");
 	}

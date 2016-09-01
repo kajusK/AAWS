@@ -36,6 +36,7 @@ $translation = array(
 'Gusts' => "Gusts",
 'Intensity' => "Intensity",
 'In last hour' => "In last hour",
+'In last 24 hours' => "In last 24 hours",
 'Since midnight' => "Since midnight",
 'This month' => "This month",
 'This year' => "This year",

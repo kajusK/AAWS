@@ -21,6 +21,7 @@ class Weather {
 			'wind_gusts' => Wind::getGusts(),
 			'rain' => Rain::getIntensity(),
 			'rain_hour' => Rain::lastHour(),
+			'rain_24h' => Rain::last24h(),
 			'rain_midnight' => Rain::sinceMidnight(),
 			'rain_month' => Rain::thisMonth(),
 			'rain_year' => Rain::thisYear(),
