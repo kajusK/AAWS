@@ -4,3 +4,4 @@
 * Add more extremes (rain 24h/week/month/year, time without rain, longest rain...)
 * Generate METAR messages
 * Add moon phases to web UI
+* Create good looking default theme
