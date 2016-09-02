@@ -1,9 +1,12 @@
 [general]
 #keep false or commented when running in production
 debug = true
-default_lang = "en"
 timezone = "Europe/Prague"
 theme = "default";
+#languages that can be used in web interface, for every specified language there
+#must be lang/lang.php translation and about/lang.phtml about page
+#first language in the list is used as defaultt
+lang_enabled = "en,cs"
 
 [station]
 #Name of the station's location

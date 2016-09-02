@@ -25,9 +25,9 @@ function get_link($path, $lang=false, $params=array())
 {
 	$link = "?";
 
-	if (Lang::getLang() != Config::get("general","default_lang") && !$lang)
+	if (Lang::getLang() != Lang::getDefault() && !$lang)
 		$lang = Lang::getLang();
-	if ($lang && Config::get("general", "default_lang") != $lang)
+	if ($lang && Lang::getDefault() != $lang)
 		$params['lang'] = $lang;
 
 	if ($path != false && $path != "index")

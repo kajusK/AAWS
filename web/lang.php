@@ -16,14 +16,14 @@ class Lang
 
 	//select language to use and load translations
 	public static function select() {
-		self::$lang = Config::get("general", "default_lang");
+		self::$lang = self::getDefault();
 
 		if (isset($_GET["lang"]))
 			self::$lang = $_GET["lang"];
 
-		if (!self::isPresent(self::$lang)) {
+		if (!self::isPresent(self::$lang) || !self::isEnabled(self::$lang)) {
 			self::$fallbacked = true;
-			self::$lang = Config::get("general", "default_lang");
+			self::$lang = self::getDefault();
 			if (!self::isPresent(self::$lang))
 				self::$lang = "en";
 		}
@@ -43,14 +43,19 @@ class Lang
 		return self::$lang;
 	}
 
-	//return all languages in array["short"] = "full name"
+	public static function getDefault() {
+		$enabled = Config::get("general", "lang_enabled");
+		return explode(',', $enabled)[0];
+	}
+
+	//return all enabled languages in array["short"] = "full name"
 	public static function getLangs() {
 		if (self::$lang_list)
 			return self::$lang_list;
 
 		self::$lang_list = array();
 		foreach(scandir("./lang") as $name) {
-			if ($name[0] == ".")
+			if ($name[0] == "." || !self::isEnabled($name[0]))
 				continue;
 			//TODO: There should be a better way, this is waste
 			//of memory and time...
@@ -63,6 +68,12 @@ class Lang
 	//is the $lang in translations?
 	public static function isPresent($lang) {
 		return is_file("lang/".$lang.".php");
+	}
+
+	public static function isEnabled($lang) {
+		if (strpos(Config::get("general", "lang_enabled"), $lang) !== false)
+			return true;
+		return false;
 	}
 
 	//fallbacked to default language?
