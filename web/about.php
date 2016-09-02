@@ -7,7 +7,7 @@
  */
 defined("IN_APP") or die("Unauthorized access");
 
-if (is_file("about/".Lang::getLang()).".phtml")
+if (is_file("about/".Lang::getLang().".phtml"))
 	require "about/".Lang::getLang().".phtml";
 else
 	require "view/about.phtml";
