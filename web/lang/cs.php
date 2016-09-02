@@ -66,4 +66,5 @@ $translation = array(
 'Next full' => "Příští úplněk",
 'Next new' => "Příští nov",
 'days' => "dnů",
+'No about' => "Informace o meteostanici nejsou v tomto jazyce dostupné, prosím požádejte administrátora o nápravu, nebo zkuste přepnout stránku do jiného jazyka.",
 );

@@ -94,5 +94,8 @@ if (isset($data))
 
 #load the page
 require "view/"."head.phtml";
-require "view/".$page.".phtml";
+if ($page != "about")
+	require "view/".$page.".phtml";
+else
+	require "about.php";
 require "view/"."foot.phtml";

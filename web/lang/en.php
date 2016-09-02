@@ -66,4 +66,5 @@ $translation = array(
 'Next full' => "Next full moon",
 'Next new' => "Next new moon",
 'days' => "days",
+'No about' => "There's no about page set for current language, please ask administrator to fix this issue or try selecting other language.",
 );

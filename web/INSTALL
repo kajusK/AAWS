@@ -1,0 +1,8 @@
+* Make sure php5 or newer is installed and pdo_mysql or pdo_sqlite extensions
+  enabled
+* Copy files to directory accessible by your webserver
+* Copy config.ini.template to config.ini and modify to suit your configuration,
+  especially database details and station elevation and location must be set
+  correctly
+* Modify files in about/${lang}.phtml in a way you like, these are shown when
+  user opens 'About station' page
