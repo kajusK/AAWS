@@ -5,3 +5,4 @@
 * Generate METAR messages
 * Rewrite moon phases code to be more accurate
 * Create good looking default theme
+* Add install page to web UI
