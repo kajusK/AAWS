@@ -6,6 +6,7 @@ require_once "temp.php";
 require_once "press.php";
 require_once "humidity.php";
 require_once "sun.php";
+require_once "moon.php";
 
 class Weather {
 	public static function generate() {
@@ -31,6 +32,10 @@ class Weather {
 			'uv_index' => Sun::getUV(),
 			'sunrise' => Sun::getSunrise(),
 			'sunset' => Sun::getSunset(),
+			'moon_age' => Moon::getAge(),
+			'moon_illumination' => Moon::getIllumination(),
+			'moon_new' => Moon::getNextNew(),
+			'moon_full' => Moon::getNextFull(),
 			'humidity' => Humidity::getCurrent(),
 			'humidity_tendency' => Humidity::getTendency());
 

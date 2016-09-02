@@ -60,4 +60,10 @@ $translation = array(
 'Sun' => "Slunce",
 'Sunrise' => "Východ",
 'Sunset' => "Západ",
+'Moon' => "Měsíc",
+'Age' => "Věk",
+'Illumination' => "Osvětleno",
+'Next full' => "Příští úplněk",
+'Next new' => "Příští nov",
+'days' => "dnů",
 );

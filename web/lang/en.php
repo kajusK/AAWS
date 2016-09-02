@@ -60,4 +60,10 @@ $translation = array(
 'Sun' => "Sun",
 'Sunrise' => "Sunrise",
 'Sunset' => "Sunset",
+'Moon' => "Moon",
+'Age' => "Age",
+'Illumination' => "Illumination",
+'Next full' => "Next full moon",
+'Next new' => "Next new moon",
+'days' => "days",
 );

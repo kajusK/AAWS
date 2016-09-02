@@ -96,6 +96,13 @@ function add_graph($id)
 </table>
 <?php add_graph("graph_uv") ?>
 
+<h2><?= Lang::get("Moon") ?></h2>
+<table>
+<tr><td><?= Lang::get("Age") ?></td><td><?= $moon_age ?> <?= Lang::get("days") ?></td></tr>
+	<tr><td><?= Lang::get("Illumination") ?></td><td><?= $moon_illumination ?> %</td></tr>
+	<tr><td><?= Lang::get("Next full") ?></td><td><?= $moon_full ?></td></tr>
+	<tr><td><?= Lang::get("Next new") ?></td><td><?= $moon_new ?></td></tr>
+</table>
 </div>
 
 
