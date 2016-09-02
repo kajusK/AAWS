@@ -238,6 +238,8 @@ int main(int argc, char **argv)
 			"trying again in %d seconds...\n", RETRY_INTERVAL);
 		sleep(RETRY_INTERVAL);
 	}
+	/* Reset rain, don't know for how long it was running without reset */
+	station_rain_reset(serial_fd);
 
 	printf("Entering main loop\n");
 	if (daemon)
