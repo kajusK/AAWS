@@ -51,8 +51,17 @@
 //rain sensor is tied to INT pin, select either INT0 or INT1
 #define RAIN_INT 0
 
+//snow sensor is tied to INT pin, select either INT0 or INT1, must differ from
+//RAIN_INT
+#define SNOW_INT 1
+//ignore any value below this one to avoid noise recognized as snow, in tenths
+//of cm
+#define SNOW_IGNORE 5
+//trigger of ultrasonic snow measurements
+#define ULTRAS_TRIG_PORT	D
+#define ULTRAS_TRIG		6
+
 //ml8511 adcX port
 #define ML8511_ADC 7
 
-//rain sensor is using pin associated with INT0
 //wind speed sensor is using pin ICP1

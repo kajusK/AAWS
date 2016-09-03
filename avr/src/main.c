@@ -4,12 +4,13 @@
  * temperature -40 to 85 (+-0,5) °C
  * air pressure 300 to 1100 (+-6) hPa
  * humidity 0-100 (+-2) %RH
+ * snow depth 0-500 cm (+-3mm)
  *
  * Communication:
  * ==============
  * Data format:
  * ------------
- * #T:23.5;H:32;P:1013.25;R:2.55;W:11.5;D:E;U:5.6;@
+ * #T:23.5;H:32;P:1013.25;R:2.55;W:11.5;D:E;U:5.6;S:12.5;@
  *
  * Explanation:
  * # - start of the message
@@ -20,6 +21,7 @@
  * W - wind speed in m/s
  * D - wind direction in degrees
  * U - UV index (0-15)
+ * S - Snow depth in cm
  * @ - end of message
  * E - error, sensor dead
  *
@@ -37,6 +39,7 @@
  * #R;@ - reset rain counter (e.g. every hour...), responds with ACK
  * #T;@ - test if station is alive, responds with ACK
  * #V;@ - firmware version
+ * #C;@ - calibrate no snow distance - current distance is saved as 0cm.
  *
  * For license, see LICENSE.txt
  *
@@ -59,6 +62,7 @@
 #include "wind.h"
 #include "ml8511.h"
 #include "utils/uart.h"
+#include "snow.h"
 
 #define SEND_DELAY 5
 
@@ -134,6 +138,10 @@ static void check_rx(void)
 		rain_reset();
 		putchar('A');
 		break;
+	case 'C':
+		snow_calibrate();
+		putchar('A');
+		break;
 	case 'V':
 		fputs("V:"VERSION, stdout);
 		break;
@@ -150,6 +158,7 @@ static enum sensor_state send_data(enum sensor_state state)
 {
 	int16_t temp_bmp;
 	int16_t temp;
+	int16_t snow;
 	uint32_t pres;
 	uint16_t hum;
 	uint8_t uv;
@@ -196,6 +205,13 @@ static enum sensor_state send_data(enum sensor_state state)
 		putchar('E');
 	else
 		print_num(uv, 1);
+
+	fputs(";S:", stdout);
+	snow = snow_get();
+	if (snow == 0xffff)
+		putchar('E');
+	else
+		print_num(snow, 1);
 
 	fputs(";@\n", stdout);
 
