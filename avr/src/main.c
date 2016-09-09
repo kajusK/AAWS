@@ -241,6 +241,7 @@ int main(int argc, char *argv[])
 
 	rain_init();
 	wind_init();
+	snow_init();
 
 	puts("Init done");
 

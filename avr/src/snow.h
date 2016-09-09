@@ -16,6 +16,8 @@
 #ifndef __SNOW_H_
 #define __SNOW_H_
 
+extern void snow_init(void);
+
 /* Set current distance as 0 */
 extern void snow_calibrate(void);
 

@@ -37,6 +37,17 @@ static volatile uint16_t pulse_len = 0;
 
 ISR(TIMER2_OVF_vect)
 {
+	//no pulse arrived, exit
+	if (MCUCR & _BV(ISCX0) && MCUCR & _BV(ISCX1)) {
+		//disable interruts
+		TIMSK &= ~_BV(TOIE2);
+		GIMSK &= ~_BV(INT_SOURCE);
+		//stop timer
+		TCCR2 = 0x00;
+		pulse_len = 0xffff;
+		return;
+	}
+
 	pulse_len += 256;
 	if (pulse_len < 65000)
 		return;
@@ -54,14 +65,15 @@ ISR(INT0_vect)
 #endif
 {
 	//if rising edge occured
-	if (MCUCR & (_BV(ISCX0) | _BV(ISCX1))) {
-		TCNT2 = 2; //start timer, /8 prescaler
-		MCUCR = (MCUCR & (~(_BV(ISCX0) | _BV(ISCX1)))) | _BV(ISCX1);
+	if (MCUCR & _BV(ISCX0) && MCUCR & _BV(ISCX1)) {
+		TCCR2 = 2; //start timer, /8 prescaler
+		TCNT2 = 0;
+		MCUCR &= ~_BV(ISCX0); //wait for failing
 		return;
 	}
 
 	//stop timer
-	TCCR2 = 0x00;
+	TCCR2 = 0;
 	if (TIFR & _BV(TOV2))
 		pulse_len += 256;
 	pulse_len += TCNT2;
@@ -75,23 +87,27 @@ ISR(INT0_vect)
 }
 
 /* returns distance in tenths of cm */
-static uint16_t ultrasonic_distance(void)
+uint16_t ultrasonic_distance(void)
 {
 	pulse_len = 0;
 	TCNT2 = 0;
-	GIMSK |= _BV(INT_SOURCE);
 	MCUCR |= _BV(ISCX0) | _BV(ISCX1); //interrupt on rising edge
+
+	//clear overflow flag if set
+	TIFR &= ~_BV(TOV2);
+	//start timer, 512 prescaler (timeout)
+	TCCR2 = 6;
+
+	//enable interrupts
+	GIMSK |= _BV(INT_SOURCE);
+	TIMSK |= _BV(TOIE2);
 
 	//start measurement
 	PORT(ULTRAS_TRIG_PORT) |= _BV(ULTRAS_TRIG);
-	_delay_us(10);
+	_delay_us(5);
 	PORT(ULTRAS_TRIG_PORT) &= ~_BV(ULTRAS_TRIG);
 
-	//enable interrupts
-	TIMSK |= _BV(TOIE2);
-	GIMSK |= _BV(INT_SOURCE);
-
-	while (GIMSK & _BV(INT_SOURCE))
+	while (TIMSK & _BV(TOIE2))
 		;
 
 	if (pulse_len == 0xffff)
@@ -101,6 +117,11 @@ static uint16_t ultrasonic_distance(void)
 	//t = pulse_len*prescaler/(F_CPU/1000000) us
 	//d = t * 5.8 = t/10 * 58
 	return pulse_len*8/(F_CPU/1000000)/10*58;
+}
+
+void snow_init(void)
+{
+	DDR(ULTRAS_TRIG_PORT) |= _BV(ULTRAS_TRIG);
 }
 
 /* Set current distance as 0 */
