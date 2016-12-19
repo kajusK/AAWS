@@ -41,7 +41,7 @@ ISR(USART_UDRE_vect)
 		UDR = ring_pop(&ring_tx);
 }
 
-int uart_putc(char c, FILE *stream)
+int uart_putc(char c, FILE __attribute__((__unused__)) *stream)
 {
 	if (c == '\n')
 		uart_putc('\r', stream);
@@ -61,7 +61,7 @@ int uart_stderr_putc(char c, FILE *stream)
 	return uart_putc(c, stream);
 }
 
-int uart_getc(FILE *stream)
+int uart_getc(FILE __attribute__((__unused__)) *stream)
 {
 	while (ring_empty(&ring_rx))
 		;
